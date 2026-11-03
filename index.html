@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Drummatic</title>
+<meta name="description" content="Drummatic: a hand-assembled drum machine in milled aluminium, shipping with the LazerDrum firmware. Built to keep evolving.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a product launch page that reads like the machine itself. Dark anodized bands, one "studio white"
+   band for the build, a thin 8-colour track-LED stripe as the only ornament, data set in mono like engraved legends. */
+:root {
+  --ink: #0b0c0e;          /* the room around the machine */
+  --panel: #141518;        /* anodized aluminium */
+  --panel-2: #1c1e22;
+  --line: #2a2d33;
+  --fg: #eceef1;
+  --dim: #9aa1ab;
+  --faint: #626a75;
+  --warm: #f3efe6;         /* the white LED */
+  --studio: #e7e6e2;       /* the light-box band */
+  --studio-ink: #17181b;
+  --studio-dim: #5a5f66;
+  --k1: #ff3b3b; --k2: #ff8a2a; --k3: #ffc02a; --k4: #f2e64a; --k5: #a6e34a; --k6: #3fd3ff; --k7: #4d7dff; --k8: #e34ad9;
+  --f-display: "Michroma", "Eurostile", "Microgramma", "Arial Black", sans-serif;
+  --f-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --s-1: 13px; --s0: 16px; --s1: 18px; --s2: 22px; --s3: clamp(26px, 3.2vw, 36px); --s4: clamp(30px, 5vw, 58px);
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --wrap: 1180px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
+body { background: var(--ink); color: var(--fg); font-family: var(--f-body); font-size: var(--s0); line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, video { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--warm); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 400; }
+p { margin: 0; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.display { font-family: var(--f-display); letter-spacing: .04em; line-height: 1.12; }
+.lede { font-size: var(--s1); color: var(--dim); max-width: 62ch; }
+.stripe { display: grid; grid-template-columns: repeat(8, 1fr); height: 3px; }
+.stripe i:nth-child(1){background:var(--k1)} .stripe i:nth-child(2){background:var(--k2)} .stripe i:nth-child(3){background:var(--k3)} .stripe i:nth-child(4){background:var(--k4)}
+.stripe i:nth-child(5){background:var(--k5)} .stripe i:nth-child(6){background:var(--k6)} .stripe i:nth-child(7){background:var(--k7)} .stripe i:nth-child(8){background:var(--k8)}
+section { padding-block: clamp(64px, 9vw, 120px); }
+.sec-head { display: grid; gap: 14px; margin-bottom: clamp(28px, 4vw, 48px); }
+.sec-head h2 { font-family: var(--f-display); font-size: var(--s3); letter-spacing: .03em; line-height: 1.2; max-width: 24ch; }
+.btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none;
+  padding: 13px 20px; border-radius: 3px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.btn:hover { border-color: var(--dim); }
+.btn.primary { background: var(--warm); color: var(--ink); border-color: var(--warm); }
+.btn.primary:hover { background: #fff; }
+
+/* ---------- header */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(11,12,14,.92); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11,12,14,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(42,45,51,.7); }
+.top .wrap { display: flex; align-items: center; gap: 22px; height: 64px; }
+.logo { font-family: var(--f-display); font-size: 17px; letter-spacing: .22em; text-decoration: none; }
+.nav { display: flex; gap: 20px; margin-left: auto; font-size: 15px; color: var(--dim); }
+.nav a { text-decoration: none; } .nav a:hover { color: var(--fg); }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.lang button { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; padding: 7px 10px; background: transparent; color: var(--dim); border: 0; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--fg); color: var(--ink); }
+.top .btn { padding: 9px 14px; font-size: 12px; }
+@media (max-width: 900px) { .nav { display: none; } .lang { margin-left: auto; } }
+@media (max-width: 480px) { .top .btn { display: none; } }
+
+/* ---------- hero */
+.hero { position: relative; padding: 0; overflow: hidden; background: radial-gradient(120% 90% at 50% 40%, #16181c 0%, var(--ink) 70%); }
+.hero .shot { position: relative; max-width: 1600px; margin: 0 auto; }
+.hero .shot img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.hero .shot::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,12,14,0) 55%, var(--ink) 100%), linear-gradient(90deg, var(--ink) 0%, rgba(11,12,14,0) 18%, rgba(11,12,14,0) 82%, var(--ink) 100%); pointer-events: none; }
+.hero-copy { position: relative; margin-top: clamp(-180px, -12vw, -40px); padding-bottom: clamp(48px, 7vw, 96px); display: grid; gap: 22px; }
+.hero h1 { font-family: var(--f-display); font-size: var(--s4); letter-spacing: .02em; line-height: 1.08; max-width: 18ch; }
+.hero .lede { font-size: clamp(17px, 1.7vw, 20px); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.price-chip { font-family: var(--f-mono); font-size: 13px; color: var(--dim); letter-spacing: .06em; }
+.price-chip b { color: var(--fg); font-weight: 500; }
+.ribbon { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ribbon .wrap { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ribbon div.cell { padding: 22px 18px 22px 0; display: grid; gap: 2px; border-right: 1px solid var(--line); padding-left: 18px; }
+.ribbon div.cell:first-child { padding-left: 0; }
+.ribbon div.cell:last-child { border-right: 0; }
+.ribbon .n { font-family: var(--f-display); font-size: clamp(22px, 2.6vw, 30px); letter-spacing: .02em; }
+.ribbon .l { color: var(--dim); font-size: 14px; }
+@media (max-width: 760px) { .ribbon .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ribbon div.cell:nth-child(2) { border-right: 0; } .ribbon div.cell:nth-child(3) { padding-left: 0; } .ribbon div.cell:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
+
+/* ---------- film */
+.film { padding-top: clamp(48px, 6vw, 80px); }
+.film-box { position: relative; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; max-width: 100%; }
+.film-box video { width: 100%; height: 100%; object-fit: cover; }
+.film-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 14px; color: var(--faint); font-size: 14px; }
+.film-bar button { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; background: transparent; color: var(--dim); border: 1px solid var(--line); border-radius: 3px; padding: 8px 12px; cursor: pointer; }
+
+/* ---------- sound */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.tabs button { font-family: var(--f-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; border-radius: 3px; border: 1px solid var(--line); background: transparent; color: var(--dim); cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--ink); background: var(--fg); border-color: var(--fg); }
+.tracks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 760px) { .tracks { grid-template-columns: minmax(0, 1fr); } }
+.trk { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 14px 12px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); text-align: left; color: var(--fg); cursor: pointer; font: inherit; width: 100%; }
+.trk:hover { border-color: #3a3e46; }
+.trk .key { width: 52px; height: 52px; border-radius: 6px; background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.14); position: relative; display: grid; place-items: center; }
+.trk .key::after { content: ""; width: 0; height: 0; border-left: 13px solid var(--dim); border-top: 8px solid transparent; border-bottom: 8px solid transparent; margin-left: 4px; }
+.trk.playing .key { background: var(--c, var(--warm)); box-shadow: 0 0 22px var(--c, var(--warm)); border-color: transparent; }
+.trk.playing .key::after { border: 0; width: 14px; height: 16px; margin: 0; background: linear-gradient(90deg, var(--ink) 0 35%, transparent 35% 65%, var(--ink) 65%); }
+.trk .meta { display: grid; gap: 6px; min-width: 0; }
+.trk .row1 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.trk .name { font-weight: 600; letter-spacing: .02em; }
+.trk .info { font-family: var(--f-mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+.trk canvas { width: 100%; height: 30px; display: block; }
+.trk .sub { font-size: 14px; color: var(--dim); }
+.sound-note { margin-top: 18px; color: var(--faint); font-size: 14px; max-width: 80ch; }
+
+/* ---------- interface (hotspots) */
+.iface { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
+@media (max-width: 960px) { .iface { grid-template-columns: minmax(0, 1fr); } }
+.map { position: relative; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: #0d0e10; }
+.map img { width: 100%; height: auto; }
+.dot { position: absolute; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255,255,255,.7); background: rgba(11,12,14,.72); color: var(--fg);
+  font-family: var(--f-mono); font-size: 12px; display: grid; place-items: center; cursor: pointer; padding: 0; }
+.dot[aria-pressed="true"] { background: var(--warm); color: var(--ink); border-color: var(--warm); box-shadow: 0 0 0 6px rgba(243,239,230,.18); }
+@media (max-width: 560px) { .dot { width: 24px; height: 24px; font-size: 11px; } }
+.spot-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.spot { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); cursor: pointer; background: transparent; border-left: 0; border-right: 0; border-top: 0; color: var(--fg); text-align: left; font: inherit; width: 100%; }
+.spot .num { font-family: var(--f-mono); font-size: 12px; color: var(--faint); padding-top: 3px; }
+.spot h3 { font-size: var(--s0); font-weight: 600; }
+.spot p { color: var(--dim); font-size: 15px; margin-top: 4px; display: none; }
+.spot[aria-expanded="true"] p { display: block; }
+.spot[aria-expanded="true"] .num { color: var(--warm); }
+
+/* ---------- firmware features */
+.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+@media (max-width: 960px) { .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .feat { grid-template-columns: minmax(0, 1fr); } }
+.feat article { padding: 26px 24px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 10px; align-content: start; min-width: 0; }
+.feat .tag { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; color: var(--faint); }
+.feat h3 { font-family: var(--f-display); font-size: 17px; letter-spacing: .04em; line-height: 1.35; }
+.feat p { color: var(--dim); font-size: 15.5px; }
+.feat ul { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 14.5px; color: var(--dim); }
+.feat li { padding-left: 14px; position: relative; } .feat li::before { content: ""; position: absolute; left: 0; top: .7em; width: 6px; height: 1px; background: var(--faint); }
+.fam { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.fam span { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .04em; padding: 4px 7px; border: 1px solid var(--line); border-radius: 3px; color: var(--dim); }
+.screen-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: clamp(28px, 4vw, 44px); }
+@media (max-width: 700px) { .screen-pair { grid-template-columns: minmax(0, 1fr); } }
+.screen-pair figure { margin: 0; display: grid; gap: 8px; }
+.screen-pair img { border-radius: 6px; border: 1px solid var(--line); width: 100%; height: auto; aspect-ratio: 16 / 9; }
+figcaption { font-size: 14px; color: var(--faint); }
+
+/* ---------- engines */
+.more { font-family: var(--f-mono); font-size: 13px; letter-spacing: .06em; color: var(--fg); text-underline-offset: 4px; margin-top: 4px; }
+.eng-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1100px) { .eng-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 800px) { .eng-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .eng-grid { grid-template-columns: minmax(0, 1fr); } }
+.eng { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--panel); display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.eng img { width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; border-bottom: 2px solid var(--c, var(--line)); }
+.eng-body { padding: 14px 16px 18px; display: grid; gap: 8px; align-content: start; }
+.eng-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.eng h3 { font-family: var(--f-display); font-size: 14px; letter-spacing: .06em; line-height: 1.3; }
+.eng-n { font-family: var(--f-mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+.eng p { color: var(--dim); font-size: 14.5px; line-height: 1.5; }
+
+/* ---------- build (studio band) */
+.studio { background: var(--studio); color: var(--studio-ink); }
+.studio .eyebrow, .studio .lede { color: var(--studio-dim); }
+.studio figcaption { color: var(--studio-dim); }
+.build-hero img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; }
+.mats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: clamp(28px, 4vw, 44px); border-top: 1px solid #c9c7c1; }
+@media (max-width: 860px) { .mats { grid-template-columns: minmax(0, 1fr); } }
+.mat { padding: 24px 22px 26px 0; border-bottom: 1px solid #c9c7c1; display: grid; gap: 8px; align-content: start; min-width: 0; }
+@media (min-width: 861px) { .mat { padding-left: 22px; border-left: 1px solid #c9c7c1; } .mat:nth-child(3n+1) { border-left: 0; padding-left: 0; } }
+.mat .spec { font-family: var(--f-mono); font-size: 12.5px; color: var(--studio-dim); letter-spacing: .04em; }
+.mat h3 { font-family: var(--f-display); font-size: 16px; letter-spacing: .04em; line-height: 1.35; }
+.mat p { font-size: 15.5px; color: #33363b; }
+.build-pair { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; margin-top: clamp(28px, 4vw, 44px); }
+@media (max-width: 760px) { .build-pair { grid-template-columns: minmax(0, 1fr); } }
+.build-pair figure { margin: 0; display: grid; gap: 8px; }
+.build-pair img { width: 100%; height: auto; border-radius: 6px; object-fit: cover; aspect-ratio: 16 / 9; }
+.rear { margin-top: clamp(28px, 4vw, 44px); display: grid; gap: 10px; }
+.rear-scroll { overflow-x: auto; }
+.rear svg { width: 100%; min-width: 640px; height: auto; display: block; }
+
+/* ---------- evolve */
+.evolve-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+@media (max-width: 900px) { .evolve-grid { grid-template-columns: minmax(0, 1fr); } }
+.pillars { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.pillar { padding: 20px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; }
+@media (max-width: 520px) { .pillar { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.pillar .k { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); padding-top: 3px; }
+.pillar h3 { font-size: var(--s1); font-weight: 600; }
+.pillar p { color: var(--dim); font-size: 15.5px; margin-top: 4px; }
+.log { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 22px 22px 8px; }
+.log h3 { font-family: var(--f-display); font-size: 15px; letter-spacing: .06em; margin-bottom: 14px; }
+.log ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.log li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.log .v { font-family: var(--f-mono); font-size: 13px; color: var(--warm); }
+.log li span { color: var(--dim); }
+.log .next .v { color: var(--faint); }
+.log-foot { font-size: 13.5px; color: var(--faint); padding: 12px 0 14px; border-top: 1px solid var(--line); }
+
+/* ---------- specs */
+.specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(24px, 4vw, 56px); }
+@media (max-width: 800px) { .specs { grid-template-columns: minmax(0, 1fr); } }
+.specs dl { margin: 0; display: grid; grid-template-columns: minmax(110px, 0.8fr) minmax(0, 2fr); border-top: 1px solid var(--line); }
+.specs dt, .specs dd { margin: 0; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.specs dt { font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding-right: 14px; padding-top: 14px; }
+.specs dd { color: var(--fg); min-width: 0; }
+.specs .sub { color: var(--dim); }
+
+/* ---------- reserve */
+.reserve { background: linear-gradient(180deg, var(--ink), #101115); }
+.reserve h2 + .lede { margin-top: 16px; }
+.reserve-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+@media (max-width: 900px) { .reserve-grid { grid-template-columns: minmax(0, 1fr); } }
+.price { font-family: var(--f-display); font-size: clamp(40px, 6vw, 64px); letter-spacing: .02em; line-height: 1; margin: 6px 0 6px; }
+.price small { font-family: var(--f-mono); font-size: 14px; letter-spacing: .06em; color: var(--dim); margin-left: 8px; }
+.incl { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; color: var(--dim); }
+.incl li { padding-left: 22px; position: relative; } .incl li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 9px; height: 9px; border-radius: 2px; background: var(--k6); opacity: .8; }
+.fine { font-size: 13.5px; color: var(--faint); margin-top: 18px; max-width: 60ch; }
+form.wait { display: grid; gap: 14px; border: 1px solid var(--line); border-radius: 6px; padding: clamp(18px, 3vw, 28px); background: var(--panel); }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label, .field .lbl { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+.field input, .field select, .field textarea { font: inherit; font-size: 16px; color: var(--fg); background: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 11px 12px; width: 100%; min-width: 0; }
+.field textarea { min-height: 96px; resize: vertical; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 520px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.chips { display: grid; gap: 8px; }
+.chips label { display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 3px; padding: 8px 11px; font-size: 14.5px; cursor: pointer; text-transform: none; letter-spacing: 0; font-family: var(--f-body); color: var(--fg); }
+.chips input { accent-color: var(--warm); margin: 0; }
+.err { color: #ff8a7a; font-size: 14px; min-height: 1em; }
+.out { border: 1px dashed #3a3e46; border-radius: 4px; padding: 14px; display: grid; gap: 10px; }
+.out pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--f-mono); font-size: 13px; color: var(--dim); max-height: 220px; overflow: auto; }
+.out .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.addr { font-family: var(--f-mono); font-size: 15px; user-select: all; }
+
+/* ---------- faq, footer */
+.faq { display: grid; gap: 0; border-top: 1px solid var(--line); max-width: 860px; }
+.faq details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+.faq summary { cursor: pointer; font-weight: 600; font-size: var(--s1); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--f-mono); color: var(--faint); }
+.faq details[open] summary::after { content: "–"; }
+.faq p { color: var(--dim); margin-top: 10px; max-width: 70ch; }
+footer { border-top: 1px solid var(--line); padding-block: 36px 48px; color: var(--faint); font-size: 14px; }
+footer .wrap { display: grid; gap: 14px; }
+footer .logo { color: var(--fg); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top">DRUMMATIC</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#sound" data-i18n="nav.sound">Sound</a>
+      <a href="#instrument" data-i18n="nav.instrument">Instrument</a>
+      <a href="#engines" data-i18n="nav.engines">Engines</a>
+      <a href="#build" data-i18n="nav.build">Build</a>
+      <a href="#evolve" data-i18n="nav.evolve">Updates</a>
+      <a href="#specs" data-i18n="nav.specs">Specs</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" aria-pressed="true">EN</button>
+      <button type="button" id="lang-it" aria-pressed="false">IT</button>
+    </div>
+    <a class="btn primary" href="#reserve" data-i18n="cta.short">Reserve</a>
+  </div>
+</header>
+
+<main id="top">
+<!-- ======================================================== HERO -->
+<section class="hero" aria-labelledby="h-hero">
+  <div class="shot"><img src="img/hero.jpg" width="2400" height="1350" alt="Drummatic drum machine in black anodized aluminium, keys lit in track colours, the LazerDrum sequencer on its touch screen" data-i18n-alt="hero.alt"></div>
+  <div class="wrap hero-copy">
+    <span class="eyebrow" data-i18n="hero.eyebrow">Drum machine · LazerDrum firmware 2.2</span>
+    <h1 id="h-hero" data-i18n="hero.title">Built like an instrument. Made to keep evolving.</h1>
+    <p class="lede" data-i18n="hero.lede">Drummatic is a hand-assembled drum machine in milled and anodized aluminium, with 46 lit keys, 9 encoders and a 5-inch touch screen. It ships with LazerDrum: 64 synthesis engines, a break generator and a 16-pattern sequencer with song mode. Everything inside it can be updated.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#sound" data-i18n="hero.listen">Listen to it</a>
+      <a class="btn" href="#reserve" data-i18n="hero.reserve">Join the waitlist</a>
+    </div>
+  </div>
+  <div class="ribbon">
+    <div class="wrap">
+      <div class="cell"><span class="n">64</span><span class="l" data-i18n="rib.1">synthesis engines in 16 families</span></div>
+      <div class="cell"><span class="n">8 × 64</span><span class="l" data-i18n="rib.2">tracks × steps, 16 patterns + song</span></div>
+      <div class="cell"><span class="n">46 + 9</span><span class="l" data-i18n="rib.3">RGB keys + encoders</span></div>
+      <div class="cell"><span class="n">8 mm</span><span class="l" data-i18n="rib.4">CNC-milled aluminium cheeks</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== FILM -->
+<section class="film" aria-labelledby="h-film">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="film.eyebrow">Film</span>
+      <h2 id="h-film" data-i18n="film.title">Ten seconds around the machine</h2>
+    </div>
+    <div class="film-box">
+      <video id="film" src="video.mp4" poster="img/poster.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Drummatic turning on the table while the sequencer runs a jungle break"></video>
+      <audio id="film-track" src="audio/main.mp3" loop preload="none"></audio>
+    </div>
+    <div class="film-bar">
+      <span data-i18n="film.note">Rendered from the production CAD files; the soundtrack is a track made with LazerDrum.</span>
+      <button type="button" id="film-sound" data-i18n="film.sound">Sound on</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== SOUND -->
+<section id="sound" aria-labelledby="h-sound">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="sound.eyebrow">Sound</span>
+      <h2 id="h-sound" data-i18n="sound.title">Every clip here came out of the machine's own engine</h2>
+      <p class="lede" data-i18n="sound.lede">No processing after the fact, no samples from elsewhere: the LazerDrum firmware rendered these offline with its own effects and mastering. Tap a key to play it.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Sound categories">
+      <button type="button" role="tab" id="tab-idm" aria-selected="true" aria-controls="panel-sound" data-i18n="tab.idm">IDM patterns</button>
+      <button type="button" role="tab" id="tab-kits" aria-selected="false" aria-controls="panel-sound" data-i18n="tab.kits">Sound kits</button>
+      <button type="button" role="tab" id="tab-styles" aria-selected="false" aria-controls="panel-sound" data-i18n="tab.styles">Demos</button>
+      <button type="button" role="tab" id="tab-fx" aria-selected="false" aria-controls="panel-sound" data-i18n="tab.fx">Effects & motion</button>
+      <button type="button" role="tab" id="tab-matrix" aria-selected="false" aria-controls="panel-sound" data-i18n="tab.matrix">Matrix</button>
+    </div>
+    <div class="tracks" id="panel-sound" role="tabpanel" aria-live="polite"></div>
+    <p class="sound-note" id="sound-note"></p>
+  </div>
+</section>
+
+<!-- ======================================================== INSTRUMENT -->
+<section id="instrument" aria-labelledby="h-inst" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="inst.eyebrow">The instrument</span>
+      <h2 id="h-inst" data-i18n="inst.title">The knob is next to the value it turns</h2>
+      <p class="lede" data-i18n="inst.lede">The screen is laid out like the panel. The eight values on the right sit in two rows of four, exactly like the eight encoders beside them. The bottom of the screen names the fifteen keys above the keyboard, in order. One modifier, FUNC, and one gesture, hold a step to edit it, cover the rest.</p>
+    </div>
+    <div class="iface">
+      <div class="map" id="map">
+        <img src="img/top.jpg" width="1560" height="1020" alt="Drummatic seen from above" data-i18n-alt="inst.alt">
+      </div>
+      <div class="spot-list" id="spots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== FIRMWARE -->
+<section aria-labelledby="h-fw" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="fw.eyebrow">Launch firmware · LazerDrum 2.2</span>
+      <h2 id="h-fw" data-i18n="fw.title">A breakbeat machine with a synthesizer behind every key</h2>
+    </div>
+    <div class="feat">
+      <article>
+        <span class="tag">ENGINES</span>
+        <h3 data-i18n="f1.h">64 engines, 16 families</h3>
+        <p data-i18n="f1.p">Each track plays one of 64 synthesized sounds, and any single step can call a different one. Twelve sound controls per engine: pitch, attack, decay, tone, noise, FM, FM ratio, FM index, resonance, drive, crush and a tail with nine resonant modes.</p>
+        <a class="more" href="#engines" data-i18n="f1.more">The 16 families, one by one</a>
+      </article>
+      <article>
+        <span class="tag">GENERATOR</span>
+        <h3 data-i18n="f2.h">A break generator that knows the genres</h3>
+        <p data-i18n="f2.p">Eight styles, from Amen jungle to drill'n'bass, with chop, ghosts, rolls, fills, hats and zaps as live controls. MATRIX builds a whole world in one press: style, tempo, break, kit and all 64 engines.</p>
+        <ul>
+          <li data-i18n="f2.l1">MARKOV: variations learned from your own pattern</li>
+          <li data-i18n="f2.l2">EVOLVE: the pattern drifts slowly, MANUAL brings it back</li>
+          <li data-i18n="f2.l3">28 break presets and 146 sound presets on the DATA encoder, the IDM ones first</li>
+        </ul>
+      </article>
+      <article>
+        <span class="tag">SEQUENCER</span>
+        <h3 data-i18n="f3.h">8 tracks × 64 steps, locks on every step</h3>
+        <p data-i18n="f3.p">Hold any key of the sixteen and the encoders write only into that step: velocity, probability, retrig, nudge, pitch, engine, a throw into the echo, a repeat, and a lock on each of the twelve sound controls.</p>
+        <ul>
+          <li data-i18n="f3.l1">Live recording from the eight track keys</li>
+          <li data-i18n="f3.l2">Copy and paste of pages, tracks and patterns</li>
+          <li data-i18n="f3.l3">24 levels of UNDO and REDO</li>
+        </ul>
+      </article>
+      <article>
+        <span class="tag">ARRANGE</span>
+        <h3 data-i18n="f4.h">16 patterns and a song, switched in time</h3>
+        <p data-i18n="f4.p">Each project holds 16 patterns sharing one kit. Pick the next one while the current one plays: it waits, blinking, and takes over the moment the current one ends. Chain them into a song of up to 99 rows with repeats, looping or stopping at the end.</p>
+      </article>
+      <article>
+        <span class="tag">EFFECTS</span>
+        <h3 data-i18n="f5.h">TAPZ, REPEAT, COLOR, mastering</h3>
+        <p data-i18n="f5.p">TAPZ is a multi-tap echo with five spatial modes, sync and freeze. REPEAT is a stutter you can hold live or trigger per step. COLOR adds tape, tube, transformer or fuzz. A mastering stage with genre profiles keeps every pattern at a target loudness.</p>
+      </article>
+      <article>
+        <span class="tag">CONNECT</span>
+        <h3 data-i18n="f6.h">MIDI in four flavours, clock in and out of step</h3>
+        <p data-i18n="f6.p">MIDI DIN in and out plus USB MIDI. Incoming notes can play the 64 engines, the 8 tracks, one engine chromatically, or the 16 steps. Set CLOCK to EXT and Drummatic follows start, stop and song position from any machine.</p>
+      </article>
+    </div>
+    <div class="screen-pair">
+      <figure><img src="img/scr-seq.png" width="1280" height="720" alt="LazerDrum sequencer page on the Drummatic screen" data-i18n-alt="scr.seq.alt" loading="lazy"><figcaption data-i18n="scr.seq">SEQ: eight tracks, the 64-step strip, and the encoder values on the right.</figcaption></figure>
+      <figure><img src="img/scr-song.png" width="1280" height="720" alt="LazerDrum song page on the Drummatic screen" data-i18n-alt="scr.song.alt" loading="lazy"><figcaption data-i18n="scr.song">SONG: rows of patterns and repeats, edited with the keys and encoders.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== ENGINES -->
+<section id="engines" aria-labelledby="h-eng" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="eng.eyebrow">The engines</span>
+      <h2 id="h-eng" data-i18n="eng.title">Sixteen ways to make a sound, four variants each</h2>
+      <p class="lede" data-i18n="eng.lede">Every engine is synthesis, not playback. Each picture is the real spectrogram of the four variants of that family, struck one after the other: time runs left to right, pitch rises from bottom to top.</p>
+    </div>
+    <div class="eng-grid" id="eng-grid"></div>
+  </div>
+</section>
+
+<!-- ======================================================== BUILD -->
+<section id="build" class="studio" aria-labelledby="h-build">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="build.eyebrow">Build quality</span>
+      <h2 id="h-build" data-i18n="build.title">Aluminium, steel and switches you can hear</h2>
+      <p class="lede" data-i18n="build.lede">No plastic shell and no glue. The case is machined and bent aluminium held together with countersunk screws and pressed-in steel fasteners, so every part can be opened, serviced and replaced.</p>
+    </div>
+    <div class="build-hero"><img src="img/light.jpg" width="2400" height="1350" alt="Drummatic on a white studio table" data-i18n-alt="build.alt" loading="lazy"></div>
+    <div class="mats">
+      <div class="mat"><span class="spec">MILLED · ANODIZED</span><h3 data-i18n="m1.h">Milled side cheeks</h3><p data-i18n="m1.p">CNC-milled from solid aluminium, bead-blasted and anodized black. They give the machine its playing angle.</p></div>
+      <div class="mat"><span class="spec">ANODIZED · ENGRAVED</span><h3 data-i18n="m2.h">Engraved top panel</h3><p data-i18n="m2.p">Black anodized aluminium with laser-engraved legends. Everything is fixed from below: nothing shows on the top face but a few screws.</p></div>
+      <div class="mat"><span class="spec">BENT · POWDER-COATED</span><h3 data-i18n="m3.h">Bent chassis tray</h3><p data-i18n="m3.p">A single bent sheet with pressed-in steel fasteners, powder-coated matte black, on rubber feet.</p></div>
+      <div class="mat"><span class="spec">MECHANICAL · HOT-SWAP</span><h3 data-i18n="m4.h">Mechanical keys, replaceable in seconds</h3><p data-i18n="m4.p">Clicky low-profile switches in hot-swap sockets under transparent caps. Each of the 46 keys has its own RGB LED, so the panel shows tracks, steps and the playhead in colour.</p></div>
+      <div class="mat"><span class="spec">DETENTED · PUSH</span><h3 data-i18n="m5.h">Encoders with a push</h3><p data-i18n="m5.p">Nine detented push encoders under solid knobs, and a potentiometer for the volume. A push resets a value or clears a step lock.</p></div>
+      <div class="mat"><span class="spec">PANEL-MOUNT</span><h3 data-i18n="m6.h">Panel-mount connectors</h3><p data-i18n="m6.p">Panel-mount USB-C power and USB host, stereo in and out on 6.35 mm jacks, MIDI DIN in and out. Nothing hangs off a circuit board.</p></div>
+    </div>
+    <div class="build-pair">
+      <figure><img src="img/knobs.jpg" width="2000" height="1250" alt="Close-up of the encoders and engraved logo" data-i18n-alt="build.knobs.alt" loading="lazy"><figcaption data-i18n="build.knobs">The eight encoders mirror the eight values on the screen.</figcaption></figure>
+      <figure><img src="img/side.jpg" width="2400" height="1100" alt="Drummatic side profile showing the wedge-shaped aluminium cheek" data-i18n-alt="build.side.alt" loading="lazy"><figcaption data-i18n="build.side">The milled cheek sets the playing angle.</figcaption></figure>
+    </div>
+    <div class="rear">
+      <span class="eyebrow" data-i18n="rear.eyebrow">Rear panel</span>
+      <div class="rear-scroll">
+        <svg viewBox="0 0 1000 170" role="img" aria-labelledby="rear-t">
+          <title id="rear-t">Rear panel connectors</title>
+          <rect x="2" y="20" width="996" height="110" rx="6" fill="#1a1b1e"/>
+          <g fill="#2c2e33" stroke="#4a4d54" stroke-width="2">
+            <rect x="48" y="51" width="48" height="48" rx="6"/><rect x="148" y="51" width="48" height="48" rx="6"/>
+            <circle cx="262" cy="75" r="26"/><circle cx="342" cy="75" r="26"/>
+            <circle cx="452" cy="75" r="24"/><circle cx="532" cy="75" r="24"/><circle cx="612" cy="75" r="24"/><circle cx="692" cy="75" r="24"/>
+            <rect x="800" y="40" width="150" height="70" rx="6" fill="#141518"/>
+          </g>
+          <g fill="#0b0c0e"><rect x="62" y="69" width="20" height="12" rx="3"/><rect x="162" y="66" width="20" height="18" rx="2"/>
+            <circle cx="262" cy="75" r="9"/><circle cx="342" cy="75" r="9"/><circle cx="452" cy="75" r="7"/><circle cx="532" cy="75" r="7"/><circle cx="612" cy="75" r="7"/><circle cx="692" cy="75" r="7"/></g>
+          <g stroke="#3a3d43" fill="none"><circle cx="875" cy="75" r="26"/><circle cx="875" cy="75" r="16"/></g>
+          <g font-family="JetBrains Mono, monospace" font-size="13" fill="#3a3d43" text-anchor="middle">
+            <text x="72" y="156" id="r1">USB-C POWER</text><text x="172" y="156" id="r2">USB HOST</text>
+            <text x="302" y="156" id="r3">MIDI IN · OUT</text><text x="492" y="156" id="r4">OUT L · R</text><text x="652" y="156" id="r5">IN L · R</text><text x="875" y="156" id="r6">FAN</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption data-i18n="rear.cap">Indicative layout. USB HOST takes a USB stick for backups and updates, or a MIDI keyboard.</figcaption>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== EVOLVE -->
+<section id="evolve" aria-labelledby="h-evolve">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="ev.eyebrow">Built to evolve</span>
+      <h2 id="h-evolve" data-i18n="ev.title">The hardware is finished. The instrument never is.</h2>
+      <p class="lede" data-i18n="ev.lede">Drummatic was designed so that what it does can change after you buy it. LazerDrum is where it starts.</p>
+    </div>
+    <div class="evolve-grid">
+      <div class="pillars">
+        <div class="pillar"><span class="k" data-i18n="p1.k">Updates</span><div><h3 data-i18n="p1.h">One file on a USB stick</h3><p data-i18n="p1.p">Copy the new firmware to a stick, plug it into USB HOST on the back, and the machine updates itself, including the controller that reads the keys. No computer, no opening the case.</p></div></div>
+        <div class="pillar"><span class="k" data-i18n="p2.k">Panel</span><div><h3 data-i18n="p2.h">Neutral by design</h3><p data-i18n="p2.p">Only fixed legends are engraved: numbers, transport, FUNC, arrows, DATA, VOLUME. Every other key is named on the screen, so a new firmware can turn the same panel into a different instrument.</p></div></div>
+        <div class="pillar"><span class="k" data-i18n="p3.k">Inside</span><div><h3 data-i18n="p3.h">Standard, serviceable parts</h3><p data-i18n="p3.p">Known, widely available parts with years of headroom, swappable keys, screws instead of glue.</p></div></div>
+        <div class="pillar"><span class="k" data-i18n="p4.k">You</span><div><h3 data-i18n="p4.h">Your ideas go on the list</h3><p data-i18n="p4.p">Tell us what Drummatic should become in the waitlist form. Requests from the first owners decide what comes after LazerDrum 2.2.</p></div></div>
+      </div>
+      <div class="log">
+        <h3 data-i18n="log.h">Firmware so far</h3>
+        <ol>
+          <li><span class="v">2.0.0</span><div data-i18n="log.1">LazerDrum on Drummatic: the full MPC plugin engine, the panel layout, UNDO, the FUNC map, the virtual panel.</div></li>
+          <li><span class="v">2.0.1</span><div data-i18n="log.2">Direct audio output, lower latency.</div></li>
+          <li><span class="v">2.0.2</span><div data-i18n="log.3">Larger type for the 5-inch screen, audio load and dropout meter.</div></li>
+          <li><span class="v">2.1</span><div data-i18n="log.4">16 patterns per project, pattern switching in time, song mode.</div></li>
+          <li><span class="v">2.2</span><div data-i18n="log.6">IDM kits: 56 sounds in seven folders and 12 IDM break presets of 32 steps, first in their lists.</div></li>
+          <li><span class="v">2.2.1</span><div data-i18n="log.7">An empty pattern starts as a copy of the one you come from; after STOP the song starts again from row 1.</div></li>
+          <li class="next"><span class="v">next</span><div><span data-i18n="log.5">Being explored: step pages that follow the playhead, more engine families, new instruments for the same panel.</span></div></li>
+        </ol>
+        <div class="log-foot" data-i18n="log.foot">Six releases in the first weeks of work on the prototype.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== SPECS -->
+<section id="specs" aria-labelledby="h-specs" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="sp.eyebrow">Specifications</span>
+      <h2 id="h-specs" data-i18n="sp.title">Technical data</h2>
+    </div>
+    <div class="specs">
+      <dl>
+        <dt data-i18n="sp.k1">Sound</dt><dd data-i18n="sp.v1">64 synthesis engines in 16 families, 8 tracks, per-step engine choice</dd>
+        <dt data-i18n="sp.k2">Sequencer</dt><dd data-i18n="sp.v2">8 tracks × 64 steps, per-step locks, 16 patterns per project, song of up to 99 rows</dd>
+        <dt data-i18n="sp.k3">Effects</dt><dd data-i18n="sp.v3">TAPZ multi-tap echo, REPEAT stutter, COLOR saturation, mastering with loudness target</dd>
+        <dt data-i18n="sp.k4">Memory</dt><dd data-i18n="sp.v4">16 project slots, automatic session save, USB backup</dd>
+        <dt data-i18n="sp.k5">Screen</dt><dd data-i18n="sp.v5">5" touch display, 1280 × 720</dd>
+        <dt data-i18n="sp.k6">Controls</dt><dd data-i18n="sp.v6">46 mechanical keys with RGB LEDs, 9 push encoders, volume potentiometer</dd>
+        <dt data-i18n="sp.k7">Audio</dt><dd data-i18n="sp.v7">24-bit converters, stereo out and stereo in on 6.35 mm jacks, engine at 48 kHz</dd>
+      </dl>
+      <dl>
+        <dt>MIDI</dt><dd data-i18n="sp.v8">DIN in and out, USB MIDI, clock follow (start, stop, song position)</dd>
+        <dt data-i18n="sp.k9">Computer</dt><dd data-i18n="sp.v9">Quad-core computer with active cooling</dd>
+        <dt data-i18n="sp.k10">Power</dt><dd data-i18n="sp.v10">USB-C, 27 W supply included, side power button</dd>
+        <dt data-i18n="sp.k11">Case</dt><dd data-i18n="sp.v11">Milled and bent aluminium, black anodized and powder-coated</dd>
+        <dt data-i18n="sp.k12">Size</dt><dd data-i18n="sp.v12">356 × 230 mm, 45 mm high at the front and 75 mm at the back, plus feet</dd>
+        <dt data-i18n="sp.k13">Updates</dt><dd data-i18n="sp.v13">From a USB stick, for both the instrument and the key controller</dd>
+        <dt data-i18n="sp.k14">Assembly</dt><dd data-i18n="sp.v14">Hand-assembled and tested in Rome, Italy</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== RESERVE -->
+<section id="reserve" class="reserve" aria-labelledby="h-res">
+  <div class="wrap reserve-grid">
+    <div>
+      <span class="eyebrow" data-i18n="res.eyebrow">First run</span>
+      <h2 id="h-res" class="display" style="font-size:var(--s3);margin-top:12px" data-i18n="res.title">Reserve a Drummatic</h2>
+      <p class="lede" data-i18n="res.lede">The first machines are built in a small run, by hand. Joining the waitlist costs nothing and commits you to nothing: you get the final price and date before anyone is asked to pay.</p>
+      <ul class="incl">
+        <li data-i18n="res.i1">Drummatic with LazerDrum 2.2 installed</li>
+        <li data-i18n="res.i2">27 W USB-C power supply</li>
+        <li data-i18n="res.i3">Every firmware update, free</li>
+        <li data-i18n="res.i4">The full manual as PDF</li>
+      </ul>
+      <p class="fine" data-i18n="res.fine">Images on this page are renders made from the production design files.</p>
+    </div>
+    <form class="wait" id="wait" novalidate>
+      <div class="two">
+        <div class="field"><label for="f-name" data-i18n="fm.name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="f-email" data-i18n="fm.email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="f-country" data-i18n="fm.country">Country</label><input id="f-country" name="country" autocomplete="country-name"></div>
+        <div class="field"><label for="f-qty" data-i18n="fm.qty">Units</label><select id="f-qty" name="qty"><option>1</option><option>2</option><option>3+</option></select></div>
+      </div>
+      <div class="field"><span class="lbl" data-i18n="fm.intent">I am</span>
+        <div class="chips">
+          <label><input type="radio" name="intent" id="f-i1" value="buy" checked> <span data-i18n="fm.i1">ready to buy the first run</span></label>
+          <label><input type="radio" name="intent" id="f-i2" value="interested"> <span data-i18n="fm.i2">interested, want details</span></label>
+          <label><input type="radio" name="intent" id="f-i3" value="follow"> <span data-i18n="fm.i3">following the project</span></label>
+        </div>
+      </div>
+      <div class="field"><label for="f-idea" data-i18n="fm.idea">What should Drummatic become next?</label><textarea id="f-idea" name="idea" data-i18n-ph="fm.idea.ph" placeholder="A feature, a firmware, a sound you are missing"></textarea></div>
+      <div class="err" id="f-err" role="alert"></div>
+      <button class="btn primary" type="submit" id="f-submit" data-i18n="fm.submit">Prepare my request</button>
+      <div class="out" id="f-out" hidden>
+        <p id="f-out-text"></p>
+        <pre id="f-msg"></pre>
+        <div class="row">
+          <button class="btn" type="button" id="f-copy" data-i18n="fm.copy">Copy message</button>
+          <span class="addr" id="f-addr"></span>
+          <button class="btn" type="button" id="f-copyaddr" data-i18n="fm.copyaddr" hidden>Copy address</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ======================================================== FAQ -->
+<section aria-labelledby="h-faq" style="padding-top:0;background:#101115">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">FAQ</span><h2 id="h-faq" data-i18n="faq.title">Questions</h2></div>
+    <div class="faq">
+      <details><summary data-i18n="q1">Do I need a computer?</summary><p data-i18n="a1">No. Drummatic is a standalone instrument: power it, play it, plug headphones or a mixer into the outputs. A computer or a phone on the same network can open a virtual copy of the panel in a browser, which is handy but optional.</p></details>
+      <details><summary data-i18n="q2">Can it run things other than LazerDrum?</summary><p data-i18n="a2">That is the idea behind it. The panel carries only neutral legends and the keys are named on screen, so a different firmware can make it a different instrument. LazerDrum is the first.</p></details>
+      <details><summary data-i18n="q3">How are updates installed?</summary><p data-i18n="a3">From a USB stick in the USB HOST socket on the back. The same stick updates the key controller, so the case never has to be opened.</p></details>
+      <details><summary data-i18n="q4">Can it sync with my other gear?</summary><p data-i18n="a4">Yes. It follows MIDI clock with start, stop and song position over DIN or USB, and incoming notes can play its tracks, engines or steps.</p></details>
+      <details><summary data-i18n="q5">Is this the final look?</summary><p data-i18n="a5">The images are renders of the production design: the case parts, the control board and the keys shown here have been made for the prototype. Small details may still change before the first run.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="stripe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <span class="logo">DRUMMATIC</span>
+    <p data-i18n="foot.p">Designed and assembled in Rome. Renders made from the production CAD files; audio rendered by the LazerDrum firmware.</p>
+  </div>
+</footer>
+
+<script id="audio-meta" type="application/json">{"fx_dry":{"dur":19.2,"peaks":[0.97,0.21,0.03,0.55,0.98,0.03,0.48,0.95,0.3,0.07,0.97,0.18,0.54,0.12,0.98,0.27,0.94,0.98,0.98,0.6,0.43,0.93,0.95,0.92,0.96,0.96,0.61,0.89,0.66,0.69,0.46,0.29,0.28,0.21,0.23,0.2,0.96,0.54,0.96,0.92,0.95,0.51,0.96,0.63,0.98,0.95,0.42,0.97,0.95,0.93,0.7,1.0,0.49,0.4,0.27,0.13,0.05,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"fx_tapz":{"dur":19.2,"peaks":[0.95,0.31,0.09,0.54,0.95,0.05,0.47,0.95,0.28,0.1,0.94,0.2,0.54,0.1,0.95,0.29,0.9,0.95,0.92,0.52,0.46,0.93,0.96,0.91,0.95,0.94,0.55,0.84,0.63,0.67,0.45,0.28,0.29,0.25,0.31,0.32,1.0,0.52,0.94,0.95,0.94,0.48,0.96,0.62,0.97,0.93,0.44,0.95,0.91,0.91,0.63,0.98,0.47,0.38,0.25,0.12,0.06,0.03,0.02,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"fx_repeat":{"dur":19.2,"peaks":[0.97,0.21,0.03,0.64,0.47,0.16,0.0,0.96,0.97,0.45,0.92,0.93,0.95,0.66,1.0,0.27,0.91,0.98,0.94,0.57,0.42,0.93,0.82,0.46,0.31,0.3,0.15,0.22,0.12,0.95,0.95,0.5,0.94,0.93,0.95,0.12,0.97,0.54,0.95,0.92,0.95,0.5,0.97,0.94,0.96,0.94,0.41,0.92,0.93,0.94,0.58,0.98,0.49,0.39,0.28,0.13,0.06,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"fx_color":{"dur":19.2,"peaks":[0.99,0.37,0.09,0.64,1.0,0.07,0.77,0.96,0.4,0.16,0.99,0.32,0.71,0.25,0.94,0.43,0.93,0.99,0.96,0.7,0.56,0.91,0.89,0.92,0.96,0.96,0.69,0.89,0.73,0.7,0.44,0.34,0.39,0.29,0.34,0.28,0.99,0.72,0.98,0.86,0.97,0.3,1.0,0.66,0.83,0.99,0.4,0.82,0.88,0.93,0.75,0.91,0.46,0.46,0.33,0.23,0.1,0.04,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"fx_evolve":{"dur":18.7,"peaks":[1.0,0.91,0.46,0.82,0.57,0.84,0.87,0.87,0.58,0.67,0.9,1.0,0.64,0.31,0.47,0.98,0.3,0.8,0.62,0.8,0.32,0.73,0.95,0.51,0.84,0.82,0.91,0.62,0.53,0.72,0.95,0.58,0.06,0.05,0.64,0.84,0.31,0.92,0.43,0.91,0.92,1.0,0.53,0.74,0.53,0.94,0.82,0.43,0.67,0.82,0.47,0.27,0.23,0.91,0.87,0.83,0.8,0.6,0.59,0.66,0.68,0.38,0.25,0.12,0.05,0.02,0.01,0.0,0.0,0.0,0.0,0.0]},"matrix_0":{"dur":16.1,"peaks":[1.0,0.71,0.76,0.24,0.74,0.73,0.67,0.77,0.24,0.84,0.69,0.75,0.64,0.57,0.94,0.86,0.32,0.75,0.79,0.21,0.76,0.75,0.01,0.16,0.01,0.82,0.0,0.85,0.16,0.01,0.32,0.01,0.0,0.0,0.0,0.0,0.0,0.7,0.75,0.63,0.67,0.56,0.53,0.43,0.88,0.83,0.71,0.71,0.76,0.73,0.65,0.73,0.01,0.35,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"matrix_1":{"dur":14.5,"peaks":[1.0,0.44,0.05,0.62,1.0,0.64,0.89,0.68,0.47,0.01,0.68,0.77,0.95,0.53,0.23,0.28,0.97,0.7,0.82,0.86,0.72,0.5,0.77,0.88,0.44,0.92,0.01,0.01,0.0,0.0,0.0,1.0,0.72,0.92,0.59,0.82,0.79,0.47,0.99,0.44,0.27,0.32,0.97,0.82,0.83,0.81,0.52,0.79,0.62,0.9,0.8,0.31,0.33,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"matrix_2":{"dur":17.7,"peaks":[1.0,0.67,0.41,0.94,0.91,0.54,0.1,0.92,0.78,0.32,0.17,0.19,0.25,0.83,0.36,0.85,0.63,0.42,0.17,0.88,0.63,0.06,0.87,0.78,0.63,0.25,0.13,0.92,0.77,0.56,0.23,0.01,0.01,0.16,0.01,0.0,0.0,0.94,0.28,0.02,0.0,0.18,0.89,0.85,0.15,0.94,0.74,0.43,0.15,0.93,0.56,0.06,0.92,0.29,0.16,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_0":{"dur":31.0,"peaks":[1.0,0.08,0.62,0.03,0.96,0.27,0.87,0.42,0.49,0.94,0.99,0.92,0.61,0.89,0.95,0.96,0.95,0.52,0.58,0.32,0.22,0.17,0.97,0.28,0.06,1.0,0.46,0.92,0.96,0.96,0.94,0.89,0.98,0.97,0.96,0.91,0.8,0.5,0.26,0.13,0.21,0.98,0.99,0.17,0.93,0.92,0.95,0.96,0.93,0.88,0.92,0.92,0.98,0.89,0.96,0.27,0.06,0.96,0.02,0.96,0.32,0.19,0.05,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_1":{"dur":31.6,"peaks":[1.0,0.24,0.63,0.08,0.98,0.45,1.0,0.65,0.98,0.92,0.98,0.69,0.94,0.9,0.86,0.89,0.94,0.69,0.57,0.44,0.25,0.99,0.5,1.0,0.89,1.0,0.95,0.94,0.98,0.99,0.96,0.96,0.92,0.93,0.89,0.95,0.93,0.84,0.95,0.51,0.99,0.88,0.97,0.49,0.64,0.96,0.93,0.94,0.95,0.95,0.74,0.96,0.96,0.93,0.93,0.92,0.58,0.56,0.21,1.0,0.53,0.5,0.29,0.07,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_2":{"dur":29.5,"peaks":[0.95,0.16,0.8,0.52,0.05,0.89,0.89,0.17,0.03,1.0,0.83,0.6,0.95,0.97,0.69,0.81,0.6,0.75,0.91,0.83,0.98,0.87,0.73,0.86,1.0,0.58,0.43,0.31,0.31,0.31,0.11,0.92,0.4,0.1,0.02,0.98,0.65,0.05,0.91,0.98,0.89,0.76,0.98,0.94,0.76,0.98,0.88,0.76,0.96,0.62,0.85,0.7,0.14,0.02,0.79,1.0,0.19,0.93,0.48,0.35,0.07,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_3":{"dur":30.3,"peaks":[0.82,0.96,0.58,0.57,0.92,0.24,0.26,0.83,0.91,0.94,0.91,0.51,0.99,0.91,0.8,0.84,0.83,0.51,0.39,0.29,0.31,0.95,0.26,0.5,0.94,0.85,0.26,0.96,0.15,0.93,0.89,0.76,0.84,0.69,0.91,0.86,0.79,0.78,0.95,0.85,0.9,0.9,0.92,0.51,0.28,0.19,0.97,0.67,0.87,1.0,0.51,0.94,0.86,0.8,0.8,0.88,0.8,0.9,0.79,0.92,0.45,0.34,0.15,0.07,0.02,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_4":{"dur":28.5,"peaks":[1.0,0.07,0.93,0.6,0.01,0.85,0.17,0.93,0.32,0.8,0.86,0.94,0.95,0.78,0.69,0.9,0.91,0.87,0.86,0.84,0.66,0.75,0.31,0.23,0.13,0.11,0.91,0.21,0.03,0.24,0.91,0.9,0.88,0.88,0.81,0.87,0.96,0.92,0.94,0.77,0.92,0.6,0.95,0.13,0.5,0.97,0.75,0.98,0.69,0.94,0.82,0.46,0.91,0.94,0.95,0.84,0.65,0.96,0.96,0.4,0.19,0.05,0.02,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_5":{"dur":30.3,"peaks":[0.98,0.05,0.9,0.41,0.95,0.25,0.09,0.44,0.64,0.87,0.87,0.81,0.69,0.84,0.79,0.86,0.78,0.74,0.72,0.42,0.11,0.18,0.95,0.48,0.05,0.95,0.58,0.93,0.92,0.84,0.9,0.89,0.88,0.87,0.8,0.91,0.94,0.26,0.83,0.04,0.11,0.7,0.3,0.06,0.03,0.91,0.75,0.87,0.67,0.83,0.82,0.86,0.81,0.78,0.92,0.36,0.46,0.96,0.14,1.0,0.43,0.22,0.04,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_6":{"dur":28.6,"peaks":[1.0,0.17,0.55,0.93,0.17,0.93,0.4,0.12,0.29,0.85,0.48,0.96,0.98,0.73,0.91,0.7,0.72,0.96,0.85,0.95,0.91,0.95,0.98,0.79,0.48,0.34,0.22,0.17,0.93,0.42,0.11,0.25,0.99,0.57,0.97,0.97,0.85,0.9,0.98,0.94,0.99,0.91,0.96,0.93,0.94,0.79,0.97,0.22,0.97,0.49,0.05,0.95,0.99,0.81,0.94,0.95,0.94,0.95,0.47,0.33,0.1,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"demo_7":{"dur":30.9,"peaks":[1.0,0.05,0.92,0.05,0.96,0.18,0.97,0.62,0.97,0.97,0.88,0.9,0.96,0.93,0.92,0.75,0.66,0.3,0.17,0.84,0.71,0.28,0.16,0.85,0.97,0.99,0.35,0.93,0.8,0.94,0.93,0.9,0.9,0.93,0.76,0.9,0.92,0.88,0.95,0.94,0.77,0.44,0.37,1.0,0.72,0.07,0.77,0.99,0.89,0.99,0.9,0.97,0.93,0.97,0.97,0.88,0.96,0.88,0.95,0.92,0.85,0.33,0.11,0.02,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"pat_0":{"dur":23.3,"peaks":[0.96,0.7,0.09,0.83,0.99,0.91,0.98,0.2,1.0,0.98,0.96,0.98,0.99,0.99,0.99,0.99,1.0,0.99,0.28,0.78,0.99,0.95,0.97,0.97,0.96,0.99,0.8,0.92,0.99,0.99,0.99,0.98,0.98,0.93,0.68,0.1,0.99,0.99,0.96,0.97,0.21,0.99,0.99,0.93,0.99,0.99,0.99,0.99,0.98,0.99,0.99,0.26,0.99,0.99,0.97,0.97,0.97,0.98,0.99,0.81,0.93,0.99,0.98,0.99,0.98,0.97,0.17,0.11,0.06,0.05,0.03,0.02]},"pat_1":{"dur":16.8,"peaks":[0.99,0.27,0.73,0.75,0.08,0.99,0.93,0.99,0.76,0.93,0.93,0.95,0.98,0.96,0.99,0.99,0.48,0.76,0.99,0.22,0.95,0.99,0.98,0.99,0.98,0.88,0.98,0.99,1.0,0.99,0.98,0.99,0.43,0.77,0.99,0.17,0.94,0.99,0.98,0.99,0.96,0.89,0.99,0.99,0.95,1.0,1.0,0.99,0.45,0.41,0.99,0.18,0.91,0.99,1.0,0.99,0.63,1.0,0.99,0.99,0.9,0.97,0.99,0.87,0.26,0.14,0.08,0.05,0.03,0.02,0.01,0.01]},"pat_2":{"dur":21.2,"peaks":[0.99,0.07,0.8,0.89,0.18,0.99,0.39,0.75,0.99,0.68,0.95,0.99,0.99,0.99,0.99,1.0,0.99,0.25,0.99,0.94,0.47,0.99,0.72,0.66,0.99,0.47,0.67,0.98,0.99,0.95,0.99,0.99,0.99,0.46,0.13,0.99,0.63,0.28,0.99,0.07,0.99,0.61,0.7,0.97,0.99,0.96,0.99,0.99,0.99,0.97,0.22,0.97,0.91,0.18,0.99,0.19,0.71,0.99,0.7,0.96,0.99,0.99,0.99,0.99,0.99,0.98,0.1,0.07,0.04,0.03,0.02,0.01]},"pat_3":{"dur":17.6,"peaks":[1.0,0.11,0.96,0.69,0.09,0.87,0.9,0.94,0.96,0.96,0.99,0.98,0.99,0.95,0.97,1.0,0.99,0.94,0.97,0.95,0.68,1.0,1.0,0.99,1.0,0.95,0.88,0.98,1.0,0.95,0.98,1.0,0.95,1.0,0.98,0.94,0.62,1.0,1.0,0.99,1.0,0.94,0.91,1.0,0.97,0.86,0.99,1.0,0.97,0.98,0.98,0.99,0.64,1.0,1.0,1.0,0.94,0.95,0.84,0.99,0.97,0.82,0.99,1.0,0.52,0.25,0.1,0.09,0.05,0.03,0.03,0.02]},"pat_4":{"dur":17.4,"peaks":[1.0,0.17,0.99,0.99,1.0,0.94,0.84,1.0,0.98,1.0,0.99,0.98,0.99,0.99,1.0,1.0,1.0,0.38,1.0,0.99,1.0,0.99,0.89,0.97,0.97,0.87,1.0,0.89,1.0,0.97,1.0,1.0,0.91,0.39,1.0,0.99,1.0,0.99,0.88,1.0,0.96,1.0,1.0,0.99,0.99,0.99,1.0,1.0,0.92,0.42,1.0,0.79,1.0,0.99,0.9,1.0,0.93,1.0,0.99,0.99,0.99,0.99,1.0,1.0,0.53,0.3,0.12,0.06,0.03,0.01,0.01,0.01]},"pat_5":{"dur":19.5,"peaks":[1.0,0.05,0.96,1.0,0.61,0.4,0.97,0.59,1.0,0.93,0.93,0.99,0.98,0.94,0.99,1.0,1.0,0.23,0.98,1.0,0.8,0.5,0.7,0.59,1.0,0.85,0.93,0.99,1.0,0.99,0.94,0.99,1.0,0.47,0.99,0.99,0.86,0.56,0.88,0.66,0.98,0.91,0.93,1.0,1.0,1.0,1.0,1.0,1.0,0.57,0.89,1.0,0.89,0.57,0.36,0.69,0.98,0.5,0.97,0.99,1.0,0.98,1.0,1.0,0.97,0.13,0.08,0.04,0.03,0.02,0.01,0.01]},"pat_6":{"dur":22.0,"peaks":[0.99,0.61,0.12,0.02,0.66,0.02,0.96,0.83,0.99,0.99,0.96,0.98,1.0,0.99,0.98,0.99,0.99,0.99,0.94,0.04,0.73,0.02,0.94,0.97,0.99,0.79,0.99,0.99,0.99,0.98,0.99,0.99,0.99,0.96,0.99,0.07,0.73,0.66,0.92,0.98,0.98,0.99,0.99,0.98,0.95,1.0,0.99,0.99,1.0,0.99,0.99,0.7,0.04,0.85,0.02,0.99,0.74,0.99,0.99,0.93,0.99,0.99,0.97,0.99,0.99,0.99,0.08,0.05,0.03,0.02,0.01,0.01]},"pat_7":{"dur":18.3,"peaks":[1.0,0.15,0.04,0.93,0.03,0.97,1.0,0.93,1.0,1.0,1.0,0.98,0.98,0.97,0.76,1.0,1.0,0.35,0.11,0.92,0.05,1.0,1.0,0.94,0.96,1.0,0.95,1.0,0.98,0.99,0.98,0.98,1.0,0.36,0.13,0.96,0.05,1.0,1.0,0.76,0.99,1.0,0.94,0.99,0.97,0.99,0.99,1.0,1.0,0.36,0.13,0.98,0.06,0.96,1.0,0.95,0.99,1.0,0.92,1.0,0.98,0.98,0.99,1.0,1.0,0.1,0.05,0.04,0.03,0.01,0.01,0.01]},"pat_8":{"dur":16.2,"peaks":[0.99,0.94,0.99,0.63,0.55,0.86,0.72,0.96,0.83,0.99,0.49,0.97,0.95,1.0,1.0,0.99,0.57,0.99,0.99,0.49,0.9,0.97,0.98,0.99,0.79,0.99,0.42,0.94,0.95,0.99,0.99,0.99,0.4,0.99,0.97,0.55,0.77,0.97,0.93,0.99,0.99,0.98,0.83,0.99,0.99,0.99,1.0,0.99,0.99,0.17,0.98,0.86,0.42,0.97,0.96,0.98,0.99,0.99,0.25,0.93,0.99,1.0,0.97,0.65,0.17,0.05,0.03,0.02,0.01,0.01,0.01,0.0]},"pat_9":{"dur":20.3,"peaks":[1.0,0.28,0.06,0.72,0.01,0.88,0.9,0.6,1.0,1.0,1.0,1.0,1.0,1.0,0.99,1.0,1.0,0.82,0.99,1.0,0.07,1.0,0.97,0.45,1.0,1.0,1.0,1.0,1.0,1.0,0.99,1.0,1.0,0.93,0.99,1.0,0.2,0.45,1.0,0.89,1.0,0.82,1.0,0.97,1.0,1.0,0.99,0.99,1.0,0.95,0.6,1.0,0.54,0.48,1.0,0.87,1.0,0.89,1.0,0.93,1.0,1.0,0.96,0.99,0.99,0.14,0.08,0.05,0.03,0.02,0.01,0.01]},"pat_10":{"dur":17.0,"peaks":[0.99,0.56,0.79,0.88,0.98,0.92,0.99,0.99,0.99,0.98,0.96,0.98,0.99,0.98,0.99,0.99,0.82,0.92,0.62,0.26,0.99,0.88,0.99,0.99,0.99,0.99,0.94,0.98,0.99,1.0,0.99,0.99,0.48,0.99,0.58,0.26,0.99,0.74,0.99,0.99,0.99,0.99,0.88,0.97,0.99,0.96,0.99,1.0,0.47,0.98,0.46,0.98,0.99,0.51,0.99,0.99,0.99,0.98,0.82,0.99,0.99,0.98,0.99,0.99,0.28,0.19,0.11,0.08,0.04,0.02,0.02,0.01]},"pat_11":{"dur":18.7,"peaks":[0.99,0.4,0.03,0.99,0.71,0.94,0.13,0.86,0.99,0.97,0.95,0.99,0.97,0.99,0.99,0.99,0.99,0.74,0.09,0.99,0.85,0.93,0.15,0.56,0.99,0.99,0.91,0.99,0.99,0.99,1.0,0.99,0.99,0.75,0.12,0.99,0.93,0.99,0.17,0.59,0.98,0.99,0.96,0.99,0.98,0.99,0.99,0.99,0.99,0.74,0.12,0.99,0.94,0.95,0.24,0.58,0.99,0.99,0.97,0.99,0.99,0.99,1.0,1.0,0.99,0.39,0.13,0.05,0.03,0.02,0.01,0.01]},"kit_0":{"dur":6.8,"peaks":[0.98,0.03,0.02,0.02,0.01,0.01,0.84,0.59,0.15,0.02,0.02,0.01,0.97,0.89,0.62,0.39,0.23,0.1,0.06,0.8,0.03,0.01,0.01,0.01,0.01,0.81,0.65,0.25,0.08,0.03,0.02,0.62,0.57,0.16,0.02,0.02,0.01,0.01,0.79,0.4,0.09,0.02,0.01,0.01,1.0,0.93,0.79,0.26,0.08,0.04,0.02,0.02,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_1":{"dur":6.8,"peaks":[0.74,0.07,0.08,0.04,0.01,0.03,1.0,0.05,0.07,0.04,0.01,0.02,0.99,0.58,0.09,0.05,0.05,0.03,0.02,0.65,0.04,0.04,0.03,0.01,0.01,0.81,0.69,0.29,0.05,0.05,0.03,0.6,0.55,0.07,0.03,0.04,0.02,0.02,0.61,0.03,0.03,0.02,0.01,0.01,0.37,0.01,0.02,0.01,0.0,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_2":{"dur":6.8,"peaks":[0.78,0.76,0.75,0.66,0.45,0.18,0.86,0.84,0.8,0.72,0.66,0.57,1.0,0.86,0.69,0.3,0.19,0.13,0.09,0.86,0.61,0.42,0.19,0.08,0.04,0.67,0.53,0.23,0.07,0.02,0.01,0.51,0.54,0.29,0.15,0.08,0.04,0.02,0.83,0.61,0.23,0.07,0.02,0.03,0.91,0.84,0.6,0.39,0.26,0.16,0.09,0.05,0.03,0.02,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_3":{"dur":6.8,"peaks":[0.81,0.04,0.04,0.02,0.01,0.01,1.0,0.31,0.08,0.04,0.02,0.02,0.72,0.58,0.05,0.02,0.03,0.02,0.01,0.77,0.25,0.11,0.03,0.02,0.02,0.25,0.1,0.02,0.01,0.01,0.01,0.76,0.54,0.07,0.04,0.04,0.02,0.02,0.97,0.36,0.09,0.04,0.03,0.03,0.22,0.1,0.04,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_4":{"dur":6.8,"peaks":[0.76,0.07,0.08,0.05,0.02,0.03,1.0,0.05,0.07,0.04,0.01,0.02,0.85,0.77,0.13,0.09,0.07,0.04,0.03,0.8,0.06,0.06,0.04,0.02,0.02,0.6,0.27,0.08,0.04,0.04,0.03,0.81,0.76,0.08,0.05,0.05,0.03,0.02,0.93,0.07,0.07,0.04,0.02,0.03,0.47,0.03,0.03,0.02,0.01,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_5":{"dur":6.8,"peaks":[1.0,0.06,0.05,0.03,0.02,0.02,0.85,0.3,0.07,0.03,0.01,0.02,0.74,0.15,0.05,0.03,0.03,0.02,0.01,0.68,0.06,0.06,0.04,0.02,0.02,0.79,0.06,0.05,0.04,0.02,0.02,0.57,0.2,0.03,0.01,0.02,0.01,0.0,0.58,0.04,0.02,0.02,0.01,0.01,0.84,0.07,0.1,0.06,0.03,0.03,0.02,0.02,0.01,0.0,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]},"kit_6":{"dur":6.8,"peaks":[0.92,0.84,0.9,0.79,0.55,0.2,1.0,0.91,0.83,0.78,0.79,0.54,0.9,0.78,0.32,0.2,0.09,0.05,0.04,0.07,0.02,0.01,0.01,0.0,0.0,0.08,0.02,0.0,0.0,0.0,0.0,0.06,0.0,0.0,0.0,0.0,0.0,0.0,0.65,0.58,0.39,0.24,0.13,0.07,0.56,0.29,0.11,0.04,0.02,0.01,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}}</script>
+<script>
+(function () {
+  "use strict";
+  var CONTACT = "";   // the address shown under the waitlist form
+  var META = {}; try { META = JSON.parse(document.getElementById("audio-meta").textContent); } catch (e) {}
+
+  // ------------------------------------------------------------ translations (English is in the page)
+  var IT = {
+    "nav.sound": "Suono", "nav.instrument": "Strumento", "nav.engines": "Motori", "nav.build": "Costruzione", "nav.evolve": "Aggiornamenti", "nav.specs": "Dati tecnici",
+    "cta.short": "Prenota",
+    "hero.alt": "Drummatic in alluminio anodizzato nero, tasti accesi nei colori delle tracce, il sequencer LazerDrum sullo schermo touch",
+    "hero.eyebrow": "Drum machine · firmware LazerDrum 2.2",
+    "hero.title": "Costruita come uno strumento. Pensata per continuare a evolvere.",
+    "hero.lede": "Drummatic è una drum machine assemblata a mano in alluminio fresato e anodizzato, con 46 tasti illuminati, 9 encoder e uno schermo touch da 5 pollici. Arriva con LazerDrum: 64 motori di sintesi, un generatore di break e un sequencer a 16 pattern con modalità song. Tutto quello che ha dentro si può aggiornare.",
+    "hero.listen": "Ascoltala", "hero.reserve": "Entra in lista d'attesa",
+    "rib.1": "motori di sintesi in 16 famiglie", "rib.2": "tracce × passi, 16 pattern + song", "rib.3": "tasti RGB + encoder", "rib.4": "fianchi in alluminio fresato CNC",
+    "film.eyebrow": "Video", "film.title": "Dieci secondi intorno alla macchina",
+    "film.note": "Ricostruito dai file CAD di produzione; la colonna sonora è un brano fatto con LazerDrum.",
+    "film.sound": "Attiva l'audio", "film.mute": "Togli l'audio",
+    "sound.eyebrow": "Suono", "sound.title": "Ogni clip qui sotto esce dal motore della macchina",
+    "sound.lede": "Nessun ritocco successivo e nessun campione preso altrove: il firmware LazerDrum ha generato questi file da solo, con i suoi effetti e il suo mastering. Tocca un tasto per ascoltare.",
+    "tab.idm": "Pattern IDM", "tab.kits": "Kit di suoni", "tab.styles": "Demo", "tab.fx": "Effetti e movimento", "tab.matrix": "Matrix",
+    "inst.eyebrow": "Lo strumento", "inst.title": "La manopola sta accanto al valore che gira",
+    "inst.lede": "Lo schermo è disposto come il pannello. Gli otto valori a destra stanno in due file da quattro, esattamente come gli otto encoder accanto. In fondo allo schermo ci sono i nomi dei quindici tasti sopra la tastiera, nello stesso ordine. Un solo modificatore, FUNC, e un solo gesto, tenere premuto un passo per modificarlo, fanno il resto.",
+    "inst.alt": "Drummatic vista dall'alto",
+    "fw.eyebrow": "Firmware di partenza · LazerDrum 2.2", "fw.title": "Una macchina per breakbeat con un sintetizzatore dietro ogni tasto",
+    "f1.h": "64 motori, 16 famiglie", "f1.p": "Ogni traccia suona uno dei 64 suoni sintetizzati, e ogni singolo passo può chiamarne un altro. Dodici controlli per motore: pitch, attack, decay, tone, noise, FM, rapporto FM, indice FM, risonanza, drive, crush e una coda con nove modi risonanti.",
+    "f2.h": "Un generatore di break che conosce i generi", "f2.p": "Otto stili, dalla jungle Amen al drill'n'bass, con chop, ghost, roll, fill, hat e zap come controlli dal vivo. MATRIX costruisce un mondo intero con un tasto: stile, tempo, break, kit e tutti i 64 motori.",
+    "f2.l1": "MARKOV: variazioni imparate dal tuo pattern", "f2.l2": "EVOLVE: il pattern cambia piano piano, MANUAL lo riporta com'era", "f2.l3": "28 preset di break e 146 preset di suono sull'encoder DATA, quelli IDM per primi",
+    "f3.h": "8 tracce × 64 passi, lock su ogni passo", "f3.p": "Tieni premuto uno dei sedici tasti e gli encoder scrivono solo in quel passo: velocity, probabilità, retrig, nudge, pitch, motore, un lancio nell'eco, un repeat e un lock su ognuno dei dodici controlli del suono.",
+    "f3.l1": "Registrazione dal vivo dagli otto tasti traccia", "f3.l2": "Copia e incolla di pagine, tracce e pattern", "f3.l3": "24 livelli di UNDO e REDO",
+    "f4.h": "16 pattern e una song, cambiati a tempo", "f4.p": "Ogni progetto contiene 16 pattern che condividono lo stesso kit. Scegli il prossimo mentre suona quello attuale: aspetta lampeggiando e parte alla fine del pattern. Concatenali in una song fino a 99 righe con le ripetizioni, che ricomincia o si ferma alla fine.",
+    "f5.h": "TAPZ, REPEAT, COLOR, mastering", "f5.p": "TAPZ è un'eco a prese multiple con cinque modi spaziali, sync e freeze. REPEAT è uno stutter da tenere dal vivo o da far scattare su un passo. COLOR aggiunge nastro, valvola, trasformatore o fuzz. Uno stadio di mastering con profili per genere tiene ogni pattern al volume percepito giusto.",
+    "f6.h": "MIDI in quattro modi, clock esterno", "f6.p": "MIDI DIN in e out più MIDI via USB. Le note in ingresso possono suonare i 64 motori, le 8 tracce, un motore in modo cromatico o i 16 passi. Con CLOCK su EXT Drummatic segue start, stop e posizione nel brano da qualsiasi macchina.",
+    "f1.more": "Le 16 famiglie, una per una", "eng.eyebrow": "I motori", "eng.title": "Sedici modi di fare un suono, quattro varianti ciascuno", "eng.lede": "Ogni motore è sintesi, non riproduzione di campioni. Ogni immagine è lo spettrogramma vero delle quattro varianti di quella famiglia, suonate una dopo l'altra: il tempo scorre da sinistra a destra, l'altezza sale dal basso verso l'alto.",
+    "scr.seq": "SEQ: otto tracce, la striscia dei 64 passi e i valori degli encoder a destra.", "scr.song": "SONG: righe di pattern e ripetizioni, modificate con i tasti e gli encoder.",
+    "scr.seq.alt": "La pagina sequencer di LazerDrum sullo schermo di Drummatic", "scr.song.alt": "La pagina song di LazerDrum sullo schermo di Drummatic",
+    "build.eyebrow": "Qualità costruttiva", "build.title": "Alluminio, acciaio e tasti che si sentono",
+    "build.lede": "Nessun guscio di plastica e nessuna colla. Il contenitore è in alluminio fresato e piegato, tenuto insieme da viti svasate e inserti in acciaio pressati: ogni parte si può aprire, riparare e sostituire.",
+    "build.alt": "Drummatic su un tavolo bianco da studio",
+    "m1.h": "Fianchi fresati", "m1.p": "Fresati CNC da alluminio pieno, sabbiati e anodizzati neri. Danno alla macchina la sua inclinazione.",
+    "m2.h": "Pannello inciso", "m2.p": "Alluminio anodizzato nero con le diciture incise al laser. Tutto è fissato da sotto: sulla faccia superiore si vedono solo poche viti.",
+    "m3.h": "Vassoio piegato", "m3.p": "Un solo foglio piegato con inserti in acciaio pressati, verniciato a polvere nero opaco, su piedini in gomma.",
+    "m4.h": "Tasti meccanici, sostituibili in pochi secondi", "m4.p": "Switch clicky a basso profilo su prese hot-swap, sotto tasti trasparenti. Ognuno dei 46 tasti ha il suo LED RGB: il pannello mostra tracce, passi e la posizione del sequencer a colori.",
+    "m5.h": "Encoder con pulsante", "m5.p": "Nove encoder a scatti con pulsante sotto manopole piene, e un potenziometro per il volume. Una spinta riporta un valore a quello di partenza o toglie il lock di un passo.",
+    "m6.h": "Connettori da pannello", "m6.p": "Connettori da pannello per l'alimentazione USB-C e l'USB host, ingresso e uscita stereo su jack da 6,35 mm, MIDI DIN in e out. Niente penzola da un circuito.",
+    "build.knobs": "Gli otto encoder corrispondono agli otto valori sullo schermo.", "build.side": "Il fianco fresato dà l'inclinazione per suonare.",
+    "build.knobs.alt": "Primo piano degli encoder e del logo inciso", "build.side.alt": "Profilo laterale di Drummatic con il fianco in alluminio a cuneo",
+    "rear.eyebrow": "Pannello posteriore", "rear.cap": "Disposizione indicativa. USB HOST accetta una chiavetta per backup e aggiornamenti, o una tastiera MIDI.",
+    "ev.eyebrow": "Pensata per evolvere", "ev.title": "L'hardware è finito. Lo strumento non lo è mai.",
+    "ev.lede": "Drummatic è progettata perché quello che fa possa cambiare dopo l'acquisto. LazerDrum è il punto di partenza.",
+    "p1.k": "Aggiornamenti", "p1.h": "Un file su una chiavetta USB", "p1.p": "Copia il nuovo firmware su una chiavetta, infilala in USB HOST sul retro e la macchina si aggiorna da sola, compreso il controller che legge i tasti. Niente computer, niente contenitore da aprire.",
+    "p2.k": "Pannello", "p2.h": "Neutro per scelta", "p2.p": "Sono incise solo le diciture fisse: numeri, trasporto, FUNC, frecce, DATA, VOLUME. Tutti gli altri tasti hanno il nome sullo schermo, così un nuovo firmware può trasformare lo stesso pannello in uno strumento diverso.",
+    "p3.k": "Dentro", "p3.h": "Parti standard e riparabili", "p3.p": "Componenti noti e facili da trovare, con anni di margine, tasti sostituibili, viti al posto della colla.",
+    "p4.k": "Tu", "p4.h": "Le tue idee entrano in lista", "p4.p": "Scrivi nel modulo della lista d'attesa cosa dovrebbe diventare Drummatic. Le richieste dei primi possessori decidono cosa viene dopo LazerDrum 2.2.",
+    "log.h": "Il firmware finora", "log.1": "LazerDrum su Drummatic: tutto il motore del plugin per MPC, il pannello, UNDO, la mappa FUNC, il pannello virtuale.",
+    "log.2": "Uscita audio diretta, latenza più bassa.", "log.3": "Caratteri più grandi per lo schermo da 5 pollici, misura del carico audio e dei buchi.",
+    "log.4": "16 pattern per progetto, cambio pattern a tempo, modalità song.", "log.6": "Kit IDM: 56 suoni in sette cartelle e 12 preset di break IDM da 32 passi, primi nei loro elenchi.", "log.5": "Allo studio: pagine di passi che seguono il sequencer, nuove famiglie di motori, nuovi strumenti per lo stesso pannello.",
+    "log.7": "Un pattern vuoto parte come copia di quello da cui vieni; dopo lo STOP la song riparte dalla riga 1.",
+    "log.foot": "Sei versioni nelle prime settimane di lavoro sul prototipo.",
+    "sp.eyebrow": "Dati tecnici", "sp.title": "Caratteristiche",
+    "sp.k1": "Suono", "sp.v1": "64 motori di sintesi in 16 famiglie, 8 tracce, motore scelto anche passo per passo",
+    "sp.k2": "Sequencer", "sp.v2": "8 tracce × 64 passi, lock per passo, 16 pattern per progetto, song fino a 99 righe",
+    "sp.k3": "Effetti", "sp.v3": "Eco a prese multiple TAPZ, stutter REPEAT, saturazione COLOR, mastering con volume percepito di riferimento",
+    "sp.k4": "Memoria", "sp.v4": "16 posti per i progetti, salvataggio automatico della sessione, backup su USB",
+    "sp.k5": "Schermo", "sp.v5": "Display touch da 5\", 1280 × 720",
+    "sp.k6": "Controlli", "sp.v6": "46 tasti meccanici con LED RGB, 9 encoder con pulsante, potenziometro del volume",
+    "sp.k7": "Audio", "sp.v7": "Convertitori a 24 bit, uscita e ingresso stereo su jack da 6,35 mm, motore a 48 kHz",
+    "sp.v8": "DIN in e out, MIDI via USB, clock esterno (start, stop, posizione nel brano)",
+    "sp.k9": "Computer", "sp.v9": "Computer quad-core con raffreddamento attivo",
+    "sp.k10": "Alimentazione", "sp.v10": "USB-C, alimentatore da 27 W incluso, pulsante di accensione sul fianco",
+    "sp.k11": "Contenitore", "sp.v11": "Alluminio fresato e piegato, anodizzato nero e verniciato a polvere",
+    "sp.k12": "Dimensioni", "sp.v12": "356 × 230 mm, alta 45 mm davanti e 75 mm dietro, più i piedini",
+    "sp.k13": "Aggiornamenti", "sp.v13": "Da chiavetta USB, per lo strumento e per il controller dei tasti",
+    "sp.k14": "Assemblaggio", "sp.v14": "Assemblata e collaudata a mano a Roma",
+    "res.eyebrow": "Prima serie", "res.title": "Prenota una Drummatic", "res.vat": "IVA inclusa · indicativo",
+    "res.lede": "Le prime macchine vengono costruite a mano, in una piccola serie. Entrare in lista d'attesa non costa niente e non impegna: ricevi prezzo e data definitivi prima che a qualcuno venga chiesto di pagare.",
+    "res.i1": "Drummatic con LazerDrum 2.2 installato", "res.i2": "Alimentatore USB-C da 27 W", "res.i3": "Tutti gli aggiornamenti del firmware, gratis", "res.i4": "Il manuale completo in PDF",
+    "res.fine": "Le immagini di questa pagina sono ricostruzioni fatte dai file di progetto per la produzione.",
+    "fm.name": "Nome", "fm.email": "Email", "fm.country": "Paese", "fm.qty": "Quantità", "fm.intent": "Sono",
+    "fm.i1": "pronto a comprare la prima serie", "fm.i2": "interessato, voglio i dettagli", "fm.i3": "uno che segue il progetto",
+    "fm.idea": "Cosa dovrebbe diventare Drummatic?", "fm.idea.ph": "Una funzione, un firmware, un suono che ti manca",
+    "fm.submit": "Prepara la mia richiesta", "fm.copy": "Copia il messaggio", "fm.copyaddr": "Copia l'indirizzo",
+    "faq.title": "Domande",
+    "q1": "Serve un computer?", "a1": "No. Drummatic è uno strumento autonomo: la accendi, la suoni, colleghi cuffie o mixer alle uscite. Un computer o un telefono sulla stessa rete possono aprire una copia virtuale del pannello nel browser: comodo, ma non necessario.",
+    "q2": "Può far girare altro oltre a LazerDrum?", "a2": "È l'idea su cui è costruita. Il pannello ha solo diciture neutre e i tasti hanno il nome sullo schermo, così un firmware diverso può farne uno strumento diverso. LazerDrum è il primo.",
+    "q3": "Come si installano gli aggiornamenti?", "a3": "Da una chiavetta USB nella presa USB HOST sul retro. La stessa chiavetta aggiorna il controller dei tasti, quindi il contenitore non va mai aperto.",
+    "q4": "Si sincronizza con le altre macchine?", "a4": "Sì. Segue il MIDI clock con start, stop e posizione nel brano, via DIN o USB, e le note in ingresso possono suonare tracce, motori o passi.",
+    "q5": "È l'aspetto definitivo?", "a5": "Le immagini sono ricostruzioni del progetto di produzione: le parti del contenitore, il circuito di controllo e i tasti mostrati sono già stati realizzati per il prototipo. Qualche dettaglio può ancora cambiare prima della prima serie.",
+    "foot.p": "Progettata e assemblata a Roma. Immagini ricostruite dai file CAD di produzione; audio generato dal firmware LazerDrum."
+  };
+  var EN = {};
+  var lang = "en";
+  function t(k) { return lang === "it" && IT[k] != null ? IT[k] : EN[k]; }
+  function collectEn() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) { EN[el.getAttribute("data-i18n")] = el.innerHTML; });
+    document.querySelectorAll("[data-i18n-alt]").forEach(function (el) { EN[el.getAttribute("data-i18n-alt")] = el.getAttribute("alt"); });
+    document.querySelectorAll("[data-i18n-ph]").forEach(function (el) { EN[el.getAttribute("data-i18n-ph")] = el.getAttribute("placeholder"); });
+    EN["film.sound"] = "Sound on"; EN["film.mute"] = "Sound off";
+  }
+  function applyLang(l) {
+    lang = l; document.documentElement.lang = l;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) { var v = t(el.getAttribute("data-i18n")); if (v != null) el.innerHTML = v; });
+    document.querySelectorAll("[data-i18n-alt]").forEach(function (el) { el.setAttribute("alt", t(el.getAttribute("data-i18n-alt"))); });
+    document.querySelectorAll("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
+    document.getElementById("lang-en").setAttribute("aria-pressed", l === "en"); document.getElementById("lang-it").setAttribute("aria-pressed", l === "it");
+    renderTracks(); renderSpots(); renderEngines(); syncFilmBtn();
+    try { localStorage.setItem("dm-lang", l); } catch (e) {}
+  }
+
+  // ------------------------------------------------------------ sounds
+  var DEMOS = [
+    ["Glass Lattice", 122, { en: "Glass ticks and a bell in D minor (Dm9, Bbmaj7, Gm9, C6/9). Two quiet bars, then a 16th storm with short rim rolls; it breathes and comes back.", it: "Tick di vetro e una campana in Re minore (Rem9, Sib7+, Solm9, Do6/9). Due battute quiete, poi una tempesta in sedicesimi con rullate brevi di rim; respira e riparte." }],
+    ["Violet Bloom", 128, { en: "A held buzzing bass and an FM gong in F# dorian (F#m9, B9, F#m11, Emaj7); square blips that roll in ratchets.", it: "Basso ronzante tenuto e un gong FM in Fa# dorico (Fa#m9, Si9, Fa#m11, Mi7+); blip a onda quadra che rullano in ratchet." }],
+    ["Slow Prism", 92, { en: "Slow and wide in E phrygian (Em add9, Fmaj7, Em7, D): a deep sub drop, falling sines, a ring clang, then a sudden dense middle.", it: "Lento e ampio in Mi frigio (Mim add9, Fa7+, Mim7, Re): sub profondo, sinusoidi che scendono, un clang ad anello, poi un centro denso all'improvviso." }],
+    ["Copper Rain", 134, { en: "A minor with a Lydian colour (Am9, Cmaj7, Fmaj7#11, Em7): plucked bass, two-step blips, a stuttering glitch and metal stacks.", it: "La minore con un colore lidio (Lam9, Do7+, Fa7+#11, Mim7): basso pizzicato, blip a due passi, glitch che balbetta e metalli sovrapposti." }],
+    ["Night Lydian", 115, { en: "C lydian (Cmaj7#11, D9, Cmaj9, Am9): a ring bass, FM bleeps and a bell over a swinging, broken kick.", it: "Do lidio (Do7+#11, Re9, Do9+, Lam9): basso ad anello, bleep FM e una campana sopra una cassa spezzata con un po' di swing." }],
+    ["Indigo Steps", 125, { en: "Bb minor (Bbm11, Gbmaj9, Ab9, Ebm9): an acid bloop bass, arpeggiated blips and claps; empty bars between the bursts.", it: "Sib minore (Sibm11, Solb9+, Lab9, Mibm9): basso acid bloop, blip arpeggiati e clap; battute vuote fra una raffica e l'altra." }],
+    ["Cold Signal", 105, { en: "G minor (Gm9, Dm9, Ebmaj7, Csus): a growling FM bass, PWM blips, impulse rain and a long FM gong.", it: "Sol minore (Solm9, Rem9, Mib7+, Do sus): basso FM ringhiante, blip PWM, pioggia di impulsi e un gong FM lungo." }],
+    ["Feather Drift", 140, { en: "Eb minor (Ebm9, Ab7, Gbmaj7, Db): the fastest one, a fold bass and wood blips that turn into rolls, three waves of density.", it: "Mib minore (Mibm9, Lab7, Solb7+, Reb): il più veloce, un basso fold e blip di legno che diventano rullate, tre ondate di densità." }]
+  ];
+  var FX = [
+    ["fx_dry", { en: ["Dry", "One groove in D minor with every effect off, for comparison."], it: ["Senza effetti", "Un groove in Re minore con tutti gli effetti spenti, per confronto."] }],
+    ["fx_tapz", { en: ["TAPZ echo", "The same groove: SCATTER mode with feedback, bell, blips and zaps sent into the taps."], it: ["Eco TAPZ", "Lo stesso groove: modo SCATTER con feedback, campana, blip e zap mandati nell'eco."] }],
+    ["fx_repeat", { en: ["REPEAT", "Dense bars ending in REPEAT stutters, written on single steps."], it: ["REPEAT", "Battute dense che finiscono in stutter REPEAT, scritti su singoli passi."] }],
+    ["fx_color", { en: ["COLOR tape", "Tape saturation on the whole mix, drive high."], it: ["COLOR nastro", "Saturazione a nastro su tutto il mix, drive alto."] }],
+    ["fx_evolve", { en: ["MARKOV + EVOLVE", "One written pattern, a quiet bar and a dense one: four passes, it varies and drifts on its own."], it: ["MARKOV + EVOLVE", "Un solo pattern scritto, una battuta quieta e una densa: quattro giri, varia e si trasforma da solo."] }]
+  ];
+  var FAMS = ["FM METAL", "LASER SWEEP", "WAVEFOLD ZAP", "DIGITAL PING", "MODAL TICK", "RING HIT", "METAL HAT", "CLAP BURST", "STRING PLUCK", "GRAIN CLOUD", "BLOOP", "GLITCH", "NOISE IMPULSE", "NOISE THUD", "SUB THUMP", "SNARE CRACK"];
+  var KC = ["#ff3b3b", "#ff8a2a", "#ffc02a", "#f2e64a", "#a6e34a", "#3fd3ff", "#4d7dff", "#e34ad9"];
+  var MATRIX = [["IDM BROKEN", 146], ["DRILL'N'BASS", 188], ["BREAKBEAT 2-STEP", 130]];
+  var IDM = [["Dael Drift", 90, "Dael Punch, FM Snare, Dael Buzz, S&H Spray"], ["Drane Pulse", 130, "Click Kick, Crushed Snare, Held Sine, Bytebeat Chirp"],
+    ["Flutter Tom", 100, "Tom Kick, Gated Noise, Pluck Bass, Crackle"], ["Gantz Machine", 123, "Noise Thud, Bitcrush Snare, FM Growl, Digital Stutter"],
+    ["Ipacial Beam", 125, "Laser Kick, Clap Burst, Clean Sub, Gate Glitch"], ["Cold Lattice", 110, "Body Kick, Metal Snare, Ring Bass, Bit Grains"],
+    ["Rust Signal", 96, "Crushed Kick, Tight Rim, Acid Bloop, Random Squares"], ["Sub Fracture", 118, "Long Sub Drop, Crushed Snare, Fold Bass, Impulse Rain"],
+    ["Glass Steps", 135, "Click Kick, Tight Rim, Pluck Bass, Glass Tick"], ["Static Field", 105, "Noise Thud, Gated Noise, Dael Buzz, Crackle"],
+    ["Broken Clock", 128, "Dael Punch, Bitcrush Snare, Held Sine, S&H Spray"], ["Night Circuit", 115, "Tom Kick, FM Snare, Ring Bass, Gate Glitch"]];
+  var KITS = [["KICKS", "Dael Punch, Noise Thud, Long Sub Drop, Click Kick, Laser Kick, Crushed Kick, Tom Kick, Body Kick"],
+    ["SNARES", "Crushed Snare, Tight Rim, Gated Noise, Clap Burst, Metal Snare, Bitcrush Snare, FM Snare, Ghost Tick"],
+    ["BASS", "Dael Buzz, Held Sine, Acid Bloop, FM Growl, Ring Bass, Pluck Bass, Fold Bass, Clean Sub"],
+    ["GLITCH", "S&H Spray, Random Squares, Bytebeat Chirp, Crackle, Bit Grains, Digital Stutter, Gate Glitch, Impulse Rain"],
+    ["ZAPS", "Pew Down, Rising Beam, Wobble Zap, Fold Zap, Noise Zap, Saw Zap, Bloop Up, Micro Zap"],
+    ["BLIPS", "Square Blip, Two-Step Blip, PWM Blip, Arp Blip, Sine Drop, Glass Tick, FM Bleep, Wood Blip"],
+    ["METAL", "Metal Stack, FM Gong, Ring Clang, Closed Hat, Open Hat, FM Hat, Bell Hit, Spring Metal"]];
+  var tab = "idm";
+  var NOTES = {
+    idm: { en: "Twelve IDM break presets in the spirit of Autechre, each on its own kit: 32 steps with a sparse first bar, a second bar that fills up and a dense end with snare rolls, hat rolls, glitch bursts and a REPEAT stutter. Nudges, probabilities and per-step engines make each pass a little different. Four passes each.", it: "Dodici preset di break IDM nello spirito degli Autechre, ognuno sul suo kit: 32 passi con una prima battuta vuota, una seconda che si riempie e un finale denso con rullate, raffiche di hat, glitch e uno stutter REPEAT. Spostamenti fuori griglia, probabilità e motori per passo cambiano un po' ogni giro. Quattro giri ciascuno." },
+    kits: { en: "Seven IDM sound folders of eight sounds each, first in the preset list: kicks, snares, basses, glitch, zaps, blips and metal. Each clip plays the eight sounds of one folder, with gentle effects from the machine itself: light COLOR tape saturation and a little TAPZ as a small room.", it: "Sette cartelle di suoni IDM da otto suoni ciascuna, prime nell'elenco dei preset: kick, rullanti, bassi, glitch, zap, blip e metalli. Ogni clip fa sentire gli otto suoni di una cartella, con effetti delicati della macchina stessa: leggera saturazione a nastro COLOR e un po' di TAPZ come una stanza piccola." },
+    styles: { en: "Eight short IDM tracks of about 30 seconds on the IDM kits, made only with LazerDrum. Bass, blips, zaps and the bell are tuned to the key and follow a chord progression with per-step pitch; the bars switch like the song mode: a sparse start, then all at once the density jumps with short-decay rolls, then it empties out and fills again.", it: "Otto brani IDM di circa 30 secondi sui kit IDM, fatti solo con LazerDrum. Basso, blip, zap e campana sono intonati e seguono una progressione di accordi con il pitch per passo; le battute cambiano come nella modalità song: un inizio rado, poi di colpo la densità esplode con rullate dal decay corto, poi si svuota e torna a riempirsi." },
+    fx: { en: "Effects are set per project and per step: a single step can throw its hit into the echo or fire a repeat.", it: "Gli effetti si impostano per progetto e per passo: un singolo passo può lanciare il suo colpo nell'eco o far scattare un repeat." },
+    matrix: { en: "MATRIX picks a style, a tempo, a break and the generator settings in one press. Here: three presses on a project with the IDM kits, the sounds put back on the tracks with the PRESET knob, then the BREAK knobs (ROLLS, FILLS, HATS) and the mutes moved live, bar by bar.", it: "MATRIX sceglie stile, tempo, break e impostazioni del generatore con un tocco. Qui: tre tocchi su un progetto con i kit IDM, i suoni rimessi sulle tracce con la manopola PRESET, poi le manopole BREAK (ROLLS, FILLS, HATS) e i mute mossi dal vivo, battuta per battuta." }
+  };
+  function items() {
+    var L = lang;
+    if (tab === "idm") return IDM.map(function (s, i) { var id = "pat_" + i; return { id: id, name: s[0], info: s[1] + " BPM \u00b7 32 " + (L === "it" ? "passi" : "steps"), sub: (L === "it" ? "Kit: " : "Kit: ") + s[2] + "\u2026", c: KC[i % 8] }; });
+    if (tab === "kits") return KITS.map(function (s, i) { var id = "kit_" + i; return { id: id, name: s[0], info: "8 " + (L === "it" ? "suoni" : "sounds"), sub: s[1], c: KC[(i + 3) % 8] }; });
+    if (tab === "styles") return DEMOS.map(function (s, i) { var id = "demo_" + i; return { id: id, name: s[0], info: s[1] + " BPM" + (META[id] ? " \u00b7 " + META[id].dur.toFixed(0) + " s" : ""), sub: s[2][L] || s[2].en, c: KC[i % 8] }; });
+    if (tab === "fx") return FX.map(function (f, i) { var x = f[1][L] || f[1].en; return { id: f[0], name: x[0], info: (META[f[0]] ? META[f[0]].dur.toFixed(0) + " s" : ""), sub: x[1], c: KC[(i * 2 + 1) % 8] }; });
+    return MATRIX.map(function (m, i) { return { id: "matrix_" + i, name: "MATRIX " + (i + 1), info: m[1] + " BPM", sub: (L === "it" ? "È uscito: " : "Landed on: ") + m[0], c: KC[(i * 3 + 2) % 8] }; });
+  }
+  var audio = new Audio(); audio.preload = "none";
+  var current = null, raf = 0;
+  function drawWave(cv, peaks, prog, col) {
+    var dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    var g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    var n = peaks.length, bw = w / n;
+    for (var i = 0; i < n; i++) {
+      var v = Math.max(0.06, peaks[i]), bh = v * (h - 2), x = i * bw;
+      g.fillStyle = (i / n) < prog ? col : "#3a3e46";
+      g.fillRect(x + bw * 0.18, (h - bh) / 2, Math.max(1, bw * 0.64), bh);
+    }
+  }
+  function renderTracks() {
+    var box = document.getElementById("panel-sound"); box.textContent = "";
+    items().forEach(function (it) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "trk" + (current === it.id && !audio.paused ? " playing" : ""); b.id = "trk-" + it.id;
+      b.style.setProperty("--c", it.c);
+      b.setAttribute("aria-label", (lang === "it" ? "Ascolta " : "Play ") + it.name);
+      var k = document.createElement("span"); k.className = "key"; b.appendChild(k);
+      var m = document.createElement("span"); m.className = "meta";
+      var r1 = document.createElement("span"); r1.className = "row1";
+      var nm = document.createElement("span"); nm.className = "name"; nm.textContent = it.name;
+      var inf = document.createElement("span"); inf.className = "info"; inf.textContent = it.info;
+      r1.appendChild(nm); r1.appendChild(inf); m.appendChild(r1);
+      var cv = document.createElement("canvas"); cv.setAttribute("aria-hidden", "true"); m.appendChild(cv);
+      if (it.sub) { var s = document.createElement("span"); s.className = "sub"; s.textContent = it.sub; m.appendChild(s); }
+      b.appendChild(m);
+      b.addEventListener("click", function () { toggle(it.id); });
+      box.appendChild(b);
+      requestAnimationFrame(function () { drawWave(cv, (META[it.id] || { peaks: [] }).peaks, current === it.id ? audio.currentTime / (audio.duration || 1) : 0, it.c); });
+    });
+    document.getElementById("sound-note").textContent = NOTES[tab][lang] || NOTES[tab].en;
+  }
+  function tick() {
+    cancelAnimationFrame(raf);
+    if (!current) return;
+    var b = document.getElementById("trk-" + current);
+    if (b) drawWave(b.querySelector("canvas"), (META[current] || { peaks: [] }).peaks, audio.currentTime / (audio.duration || 1), getComputedStyle(b).getPropertyValue("--c") || "#fff");
+    if (!audio.paused) raf = requestAnimationFrame(tick);
+  }
+  function setPlaying() { document.querySelectorAll(".trk").forEach(function (b) { b.classList.toggle("playing", !audio.paused && b.id === "trk-" + current); }); }
+  function toggle(id) {
+    var film = document.getElementById("film");
+    if (current === id && !audio.paused) { audio.pause(); setPlaying(); return; }
+    if (current !== id) { audio.src = "audio/" + id + ".mp3"; current = id; }
+    var ft = document.getElementById("film-track");
+    if (!ft.paused) { ft.pause(); syncFilmBtn(); }
+    audio.play().then(function () { setPlaying(); tick(); }).catch(function () { setPlaying(); });
+  }
+  audio.addEventListener("ended", function () { setPlaying(); tick(); });
+  audio.addEventListener("pause", setPlaying);
+  ["idm", "kits", "styles", "fx", "matrix"].forEach(function (k) {
+    document.getElementById("tab-" + k).addEventListener("click", function () {
+      tab = k; document.querySelectorAll(".tabs [role=tab]").forEach(function (b) { b.setAttribute("aria-selected", b.id === "tab-" + k); }); renderTracks();
+    });
+  });
+  window.addEventListener("resize", function () { renderTracks(); });
+
+  // ------------------------------------------------------------ film
+  // the soundtrack: a LazerDrum track on its own player (the film stays muted and keeps looping)
+  var film = document.getElementById("film"), fbtn = document.getElementById("film-sound"), track = document.getElementById("film-track");
+  function syncFilmBtn() { fbtn.innerHTML = t(track.paused ? "film.sound" : "film.mute"); }
+  fbtn.addEventListener("click", function () {
+    if (track.paused) { audio.pause(); track.play().then(syncFilmBtn).catch(syncFilmBtn); film.play().catch(function () {}); }
+    else track.pause();
+    syncFilmBtn();
+  });
+  track.addEventListener("pause", syncFilmBtn);
+  track.addEventListener("play", syncFilmBtn);
+
+  // ------------------------------------------------------------ interface map
+  var SPOTS = [
+    [34.4, 28.7, { en: ["5-inch touch screen", "1280 × 720, laid out like the panel. Tap a value to hand it to the DATA encoder, drag it to change it, tap a step to select it."], it: ["Schermo touch da 5 pollici", "1280 × 720, disposto come il pannello. Tocca un valore per darlo all'encoder DATA, trascinalo per cambiarlo, tocca un passo per sceglierlo."] }],
+    [75.4, 32.4, { en: ["Eight encoders", "Two rows of four, beside the two rows of four values on screen. Turn fast for big jumps, hold FUNC for fine steps, push to reset."], it: ["Otto encoder", "Due file da quattro, accanto alle due file da quattro valori sullo schermo. Gira veloce per i salti grandi, tieni FUNC per i passi fini, spingi per tornare al valore di partenza."] }],
+    [10.3, 39.0, { en: ["DATA", "The value in the top-left corner of the screen: presets, the selected parameter, the pattern or the song row."], it: ["DATA", "Il valore nell'angolo in alto a sinistra dello schermo: preset, il parametro scelto, il pattern o la riga della song."] }],
+    [10.0, 17.9, { en: ["VOLUME", "Master output level, always under your hand."], it: ["VOLUME", "Il volume generale, sempre sotto la mano."] }],
+    [28.6, 58.2, { en: ["Eight page keys", "SEQ, BREAK, SOUND, TAPZ, REPEAT, MASTER, MIXER, PROJECT. Press again for the next bank of encoders."], it: ["Otto tasti pagina", "SEQ, BREAK, SOUND, TAPZ, REPEAT, MASTER, MIXER, PROJECT. Premi di nuovo per il banco di encoder successivo."] }],
+    [70.7, 58.2, { en: ["FUNC and six functions", "MARKOV, UNDO, GEN, SAVE, KIT, COPY. Hold FUNC and the screen shows the second function of every key."], it: ["FUNC e sei funzioni", "MARKOV, UNDO, GEN, SAVE, KIT, COPY. Tieni FUNC e lo schermo mostra la seconda funzione di ogni tasto."] }],
+    [29.4, 70.6, { en: ["Eight track keys", "Select a track and hear it. With REC and PLAY they play and record hits live; with FUNC they mute."], it: ["Otto tasti traccia", "Scegli una traccia e la senti. Con REC e PLAY suonano e registrano i colpi dal vivo; con FUNC la mettono in muto."] }],
+    [60.0, 70.6, { en: ["Transport", "REC, PLAY, STOP. With CLOCK set to EXT, the machine follows an external MIDI clock instead."], it: ["Trasporto", "REC, PLAY, STOP. Con CLOCK su EXT la macchina segue invece un MIDI clock esterno."] }],
+    [81.5, 70.6, { en: ["Arrows", "Left and right move through the four pages of 16 steps; up and down change the encoder bank. With FUNC: track and pattern."], it: ["Frecce", "Sinistra e destra scorrono le quattro pagine da 16 passi; su e giù cambiano il banco di encoder. Con FUNC: traccia e pattern."] }],
+    [49.4, 86.8, { en: ["Sixteen step keys", "Tap to switch a step on or off; hold one and every encoder writes only into that step, on any page."], it: ["Sedici tasti passo", "Tocca per accendere o spegnere un passo; tienine premuto uno e ogni encoder scrive solo in quel passo, su qualsiasi pagina."] }]
+  ];
+  var spot = 0;
+  function renderSpots() {
+    var map = document.getElementById("map"), list = document.getElementById("spots");
+    map.querySelectorAll(".dot").forEach(function (d) { d.remove(); }); list.textContent = "";
+    SPOTS.forEach(function (s, i) {
+      var x = s[2][lang] || s[2].en;
+      var d = document.createElement("button"); d.type = "button"; d.className = "dot"; d.id = "dot-" + i; d.textContent = i + 1;
+      d.style.left = s[0] + "%"; d.style.top = s[1] + "%"; d.setAttribute("aria-label", x[0]); d.setAttribute("aria-pressed", i === spot);
+      d.addEventListener("click", function () { spot = i; renderSpots(); });
+      map.appendChild(d);
+      var b = document.createElement("button"); b.type = "button"; b.className = "spot"; b.id = "spot-" + i; b.setAttribute("aria-expanded", i === spot);
+      var n = document.createElement("span"); n.className = "num"; n.textContent = (i < 9 ? "0" : "") + (i + 1);
+      var w = document.createElement("span"); var h = document.createElement("h3"); h.textContent = x[0]; var p = document.createElement("p"); p.textContent = x[1];
+      w.appendChild(h); w.appendChild(p); b.appendChild(n); b.appendChild(w);
+      b.addEventListener("click", function () { spot = i; renderSpots(); });
+      list.appendChild(b);
+    });
+  }
+
+  // ------------------------------------------------------------ engine families
+  var ENG = [
+    { en: "Three-operator FM with feedback. The modulators sit at inharmonic ratios, so a hit comes out as clanging metal, a bell or a gong. FM sets the depth, INDEX how hard the attack bites.",
+      it: "FM a tre operatori con feedback. I modulatori stanno a rapporti non armonici, così il colpo esce come metallo, campana o gong. FM regola la profondità, INDEX quanto morde l'attacco." },
+    { en: "A pitch that dives from dozens of times its base frequency in a few milliseconds: the classic laser zap. FM RATIO sets the speed of the sweep, INDEX adds a wobble; one variant sweeps upward, another uses a filtered saw for a buzzier beam.",
+      it: "Un'intonazione che precipita da decine di volte la frequenza di base in pochi millisecondi: il classico zap laser. FM RATIO regola la velocità della discesa, INDEX aggiunge un'oscillazione; una variante sale invece di scendere, un'altra usa un'onda a dente di sega filtrata per un raggio più ronzante." },
+    { en: "A sine or triangle pushed into a wavefolder while its pitch drops: bright folded harmonics that collapse into the body. The variants add ring modulation, a stepped sample rate or noise inside the fold.",
+      it: "Una sinusoide o un triangolo spinti in un wavefolder mentre l'intonazione scende: armoniche ripiegate e brillanti che collassano nel corpo. Le varianti aggiungono modulazione ad anello, una frequenza di campionamento a gradini o rumore dentro la piega." },
+    { en: "A pulse wave with a short pitch blip, like an 8-bit console. FM RATIO sets the pulse width; the variants add a second pitch step, a moving pulse width or a fast four-note arpeggio inside a single hit.",
+      it: "Un'onda quadra con un breve scatto di intonazione, come una console a 8 bit. FM RATIO regola la larghezza dell'impulso; le varianti aggiungono un secondo salto, una larghezza che si muove o un arpeggio veloce di quattro note dentro un solo colpo." },
+    { en: "A tiny burst of noise strikes four tuned resonators set to the partials of real objects: a bar, a plate, a pipe, a wood block. FM RATIO stretches the partials, INDEX colours the strike.",
+      it: "Un minuscolo colpo di rumore eccita quattro risonatori accordati sulle parziali di oggetti veri: una barra, una lastra, un tubo, un legnetto. FM RATIO allarga le parziali, INDEX colora il colpo." },
+    { en: "Two oscillators multiplied together: metallic, bell-like sidebands with no single pitch. Each variant uses a different ratio between them, and one adds noise for a dirtier hit.",
+      it: "Due oscillatori moltiplicati tra loro: bande laterali metalliche, da campana, senza un'intonazione precisa. Ogni variante usa un rapporto diverso tra i due, e una aggiunge rumore per un colpo più sporco." },
+    { en: "Six square oscillators at non-harmonic frequencies through band-pass and high-pass filters, the method behind the classic analogue hi-hats. One variant swaps them for cross-modulated sines; FM blends in noise; DECAY goes from closed to open.",
+      it: "Sei oscillatori a onda quadra su frequenze non armoniche, attraverso filtri passa-banda e passa-alto: il metodo dei charleston analogici classici. Una variante li sostituisce con sinusoidi modulate tra loro; FM aggiunge rumore; DECAY va da chiuso ad aperto." },
+    { en: "Filtered noise fired in quick bursts before the tail, like several hands clapping at once. The variants change the number of bursts, two, four or six, or scatter their timing.",
+      it: "Rumore filtrato sparato in raffiche rapide prima della coda, come più mani che battono insieme. Le varianti cambiano il numero di raffiche, due, quattro o sei, o ne sparpagliano i tempi." },
+    { en: "A Karplus-Strong string: a burst of noise circulating in a tuned delay line that slowly damps itself. TONE sets the brightness, DECAY the sustain; the variants add stiffness or a soft saturation.",
+      it: "Una corda Karplus-Strong: un colpo di rumore che gira in una linea di ritardo accordata e si smorza da solo. TONE regola la brillantezza, DECAY la durata; le varianti aggiungono rigidità o una saturazione morbida." },
+    { en: "Hundreds of tiny grains of sine, noise or FM scattered in pitch and time. FM sets the density, INDEX the pitch spread, FM RATIO the length of each grain; one variant rises as it fades.",
+      it: "Centinaia di minuscoli grani di sinusoide, rumore o FM sparpagliati in altezza e nel tempo. FM regola la densità, INDEX quanto si allargano le altezze, FM RATIO la lunghezza di ogni grano; una variante sale mentre svanisce." },
+    { en: "A sine that glides in pitch, with a touch of FM: the round, liquid bloop of dub and electro. The variants glide upward, double the glide, add a resonant filtered saw, or a vibrato.",
+      it: "Una sinusoide che scivola di intonazione, con un tocco di FM: il bloop rotondo e liquido di dub ed electro. Le varianti scivolano verso l'alto, raddoppiano la scivolata, aggiungono un dente di sega filtrato e risonante, o un vibrato." },
+    { en: "Digital artefacts on purpose: sample-and-hold noise, squares that jump to random pitches, bytebeat formulas and sparse crackle. At high FM the sound also gates itself at random.",
+      it: "Artefatti digitali voluti: rumore sample-and-hold, onde quadre che saltano su altezze casuali, formule bytebeat e crepitii radi. Con FM alto il suono si interrompe anche da solo, a caso." },
+    { en: "A click: a few samples of alternating impulse, with optional noise and a resonant band-pass. Short and dry, for ticks, rims and accents.",
+      it: "Un clic: pochi campioni di impulso alternato, con rumore e un passa-banda risonante a scelta. Corto e secco, per tic, bordi e accenti." },
+    { en: "Low-passed noise through a tuned band-pass plus a sine body, with a quick pitch drop: a soft, thick low hit. One variant saturates it into a heavier blow.",
+      it: "Rumore filtrato passa-basso attraverso un passa-banda accordato, più un corpo sinusoidale, con una rapida discesa di intonazione: un colpo basso, morbido e pieno. Una variante lo satura per un colpo più pesante." },
+    { en: "The kick: a sine with a fast pitch drop and a click on the attack. FM RATIO sets the sweep time and FM its depth; the variants trade more click, a longer body or saturation.",
+      it: "La cassa: una sinusoide con una rapida discesa di intonazione e un clic sull'attacco. FM RATIO regola il tempo della discesa e FM la sua profondità; le varianti puntano su più clic, un corpo più lungo o la saturazione." },
+    { en: "Two tuned sine bodies plus high-passed and band-passed noise on its own envelope. NOISE balances the body against the wires, FM RATIO stretches the rattle.",
+      it: "Due corpi sinusoidali accordati più rumore filtrato passa-alto e passa-banda con un inviluppo tutto suo. NOISE bilancia il corpo e la cordiera, FM RATIO allunga il fruscio." }
+  ];
+  function renderEngines() {
+    var g = document.getElementById("eng-grid"); g.textContent = "";
+    FAMS.forEach(function (f, i) {
+      var a = document.createElement("article"); a.className = "eng";
+      var img = document.createElement("img"); img.src = "img/eng/e" + (i < 10 ? "0" : "") + i + ".jpg"; img.width = 720; img.height = 360; img.loading = "lazy";
+      img.alt = (lang === "it" ? "Spettrogramma delle quattro varianti di " : "Spectrogram of the four variants of ") + f;
+      var b = document.createElement("div"); b.className = "eng-body";
+      var top = document.createElement("div"); top.className = "eng-top";
+      var h = document.createElement("h3"); h.textContent = f;
+      var n = document.createElement("span"); n.className = "eng-n"; n.textContent = (i * 4 + 1) + "–" + (i * 4 + 4);
+      top.appendChild(h); top.appendChild(n);
+      var p = document.createElement("p"); p.textContent = ENG[i][lang] || ENG[i].en;
+      b.appendChild(top); b.appendChild(p);
+      a.style.setProperty("--c", KC[i % 8]);
+      a.appendChild(img); a.appendChild(b); g.appendChild(a);
+    });
+  }
+
+  // ------------------------------------------------------------ waitlist: the page prepares the request
+  var form = document.getElementById("wait");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = document.getElementById("f-err"); err.textContent = "";
+    var name = document.getElementById("f-name").value.trim(), email = document.getElementById("f-email").value.trim();
+    if (!name) { err.textContent = lang === "it" ? "Scrivi il tuo nome." : "Please add your name."; document.getElementById("f-name").focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = lang === "it" ? "Controlla l'indirizzo email: manca una parte." : "Check the email address: part of it is missing."; document.getElementById("f-email").focus(); return; }
+    var intent = (form.querySelector("input[name=intent]:checked") || {}).value || "buy";
+    var lines = [
+      "Drummatic – " + (lang === "it" ? "lista d'attesa" : "waitlist"),
+      (lang === "it" ? "Nome: " : "Name: ") + name, "Email: " + email,
+      (lang === "it" ? "Paese: " : "Country: ") + (document.getElementById("f-country").value.trim() || "-"),
+      (lang === "it" ? "Quantità: " : "Units: ") + document.getElementById("f-qty").value,
+      (lang === "it" ? "Interesse: " : "Interest: ") + intent
+    ];
+    var idea = document.getElementById("f-idea").value.trim(); if (idea) lines.push((lang === "it" ? "Idea: " : "Idea: ") + idea);
+    var msg = lines.join("\n");
+    document.getElementById("f-msg").textContent = msg;
+    var out = document.getElementById("f-out"); out.hidden = false;
+    var addr = document.getElementById("f-addr"), ca = document.getElementById("f-copyaddr");
+    if (CONTACT) {
+      document.getElementById("f-out-text").textContent = lang === "it" ? "Il messaggio è pronto. Copialo e mandalo a questo indirizzo: ti rispondiamo con prezzo e data appena sono definitivi." : "Your request is ready. Copy it and send it to this address; we reply with the final price and date as soon as they are set.";
+      addr.textContent = CONTACT; ca.hidden = false;
+    } else {
+      document.getElementById("f-out-text").textContent = lang === "it" ? "Il messaggio è pronto. L'indirizzo per le prenotazioni viene pubblicato qui a breve: copia il messaggio e tienilo." : "Your request is ready. The reservation address will be published here shortly: copy the message and keep it.";
+      addr.textContent = ""; ca.hidden = true;
+    }
+  });
+  function copy(text, btn) {
+    var done = function () { var o = btn.innerHTML; btn.innerHTML = lang === "it" ? "Copiato" : "Copied"; setTimeout(function () { btn.innerHTML = o; }, 1600); };
+    try { navigator.clipboard.writeText(text).then(done, function () { selectText(); }); } catch (e) { selectText(); }
+    function selectText() { var r = document.createRange(); r.selectNodeContents(document.getElementById("f-msg")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  }
+  document.getElementById("f-copy").addEventListener("click", function (e) { copy(document.getElementById("f-msg").textContent, e.currentTarget); });
+  document.getElementById("f-copyaddr").addEventListener("click", function (e) { copy(CONTACT, e.currentTarget); });
+
+  // ------------------------------------------------------------ start
+  collectEn();
+  document.getElementById("lang-en").addEventListener("click", function () { applyLang("en"); });
+  document.getElementById("lang-it").addEventListener("click", function () { applyLang("it"); });
+  var saved = null; try { saved = localStorage.getItem("dm-lang"); } catch (e) {}
+  if (!saved && /^it\b/i.test(navigator.language || "")) saved = "it";
+  applyLang(saved === "it" ? "it" : "en");
+})();
+</script>
+
+</html>
