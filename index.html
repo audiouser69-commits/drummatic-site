@@ -235,7 +235,7 @@ form.wait { display: grid; gap: 14px; border: 1px solid var(--line); border-radi
 @media (max-width: 520px) { .two { grid-template-columns: minmax(0, 1fr); } }
 .chips { display: grid; gap: 8px; }
 .chips label { display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 3px; padding: 8px 11px; font-size: 14.5px; cursor: pointer; text-transform: none; letter-spacing: 0; font-family: var(--f-body); color: var(--fg); }
-.chips input { accent-color: var(--warm); margin: 0; }
+.chips input { accent-color: var(--warm); margin: 0; width: auto; flex: none; padding: 0; }
 .err { color: #ff8a7a; font-size: 14px; min-height: 1em; }
 .out { border: 1px dashed #3a3e46; border-radius: 4px; padding: 14px; display: grid; gap: 10px; }
 .out pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: var(--f-mono); font-size: 13px; color: var(--dim); max-height: 220px; overflow: auto; }
@@ -535,11 +535,11 @@ footer .logo { color: var(--fg); }
 <section id="reserve" class="reserve" aria-labelledby="h-res">
   <div class="wrap reserve-grid">
     <div>
-      <span class="eyebrow" data-i18n="res.eyebrow">First run</span>
+      <span class="eyebrow" data-i18n="res.eyebrow">First run · waitlist open</span>
       <h2 id="h-res" class="display" style="font-size:var(--s3);margin-top:12px" data-i18n="res.title">Reserve a Drummatic</h2>
       <p class="lede" data-i18n="res.lede">The first machines are built in a small run, by hand. Joining the waitlist costs nothing and commits you to nothing: you get the final price and date before anyone is asked to pay.</p>
       <ul class="incl">
-        <li data-i18n="res.i1">Drummatic with LazerDrum 2.2 installed</li>
+        <li data-i18n="res.i1">Drummatic with the latest LazerDrum installed</li>
         <li data-i18n="res.i2">27 W USB-C power supply</li>
         <li data-i18n="res.i3">Every firmware update, free</li>
         <li data-i18n="res.i4">The full manual as PDF</li>
@@ -572,6 +572,7 @@ footer .logo { color: var(--fg); }
           <button class="btn" type="button" id="f-copy" data-i18n="fm.copy">Copy message</button>
           <span class="addr" id="f-addr"></span>
           <button class="btn" type="button" id="f-copyaddr" data-i18n="fm.copyaddr" hidden>Copy address</button>
+          <a class="btn primary" id="f-mail" href="#" data-i18n="fm.mail" hidden>Send by email</a>
         </div>
       </div>
     </form>
@@ -597,6 +598,7 @@ footer .logo { color: var(--fg); }
   <div class="wrap">
     <div class="stripe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <span class="logo">DRUMMATIC</span>
+    <p><span data-i18n="foot.contact">Contact</span> · <a href="mailto:drummaticmachine@gmail.com" style="color:var(--fg)">drummaticmachine@gmail.com</a></p>
     <p data-i18n="foot.p">Designed and assembled in Rome. Renders made from the production CAD files; audio rendered by the LazerDrum firmware.</p>
   </div>
 </footer>
@@ -605,7 +607,7 @@ footer .logo { color: var(--fg); }
 <script>
 (function () {
   "use strict";
-  var CONTACT = "";   // the address shown under the waitlist form
+  var CONTACT = "drummaticmachine@gmail.com";   // the address shown under the waitlist form (the waitlist is open)
   var META = {}; try { META = JSON.parse(document.getElementById("audio-meta").textContent); } catch (e) {}
 
   // ------------------------------------------------------------ translations (English is in the page)
@@ -677,14 +679,14 @@ footer .logo { color: var(--fg); }
     "sp.k12": "Dimensioni", "sp.v12": "356 × 230 mm, alta 45 mm davanti e 75 mm dietro, più i piedini",
     "sp.k13": "Aggiornamenti", "sp.v13": "Da chiavetta USB, per lo strumento e per il controller dei tasti",
     "sp.k14": "Assemblaggio", "sp.v14": "Assemblata e collaudata a mano a Roma",
-    "res.eyebrow": "Prima serie", "res.title": "Prenota una Drummatic", "res.vat": "IVA inclusa · indicativo",
+    "res.eyebrow": "Prima serie · lista d'attesa aperta", "res.title": "Prenota una Drummatic", "res.vat": "IVA inclusa · indicativo",
     "res.lede": "Le prime macchine vengono costruite a mano, in una piccola serie. Entrare in lista d'attesa non costa niente e non impegna: ricevi prezzo e data definitivi prima che a qualcuno venga chiesto di pagare.",
-    "res.i1": "Drummatic con LazerDrum 2.2 installato", "res.i2": "Alimentatore USB-C da 27 W", "res.i3": "Tutti gli aggiornamenti del firmware, gratis", "res.i4": "Il manuale completo in PDF",
+    "res.i1": "Drummatic con l'ultimo LazerDrum installato", "res.i2": "Alimentatore USB-C da 27 W", "res.i3": "Tutti gli aggiornamenti del firmware, gratis", "res.i4": "Il manuale completo in PDF",
     "res.fine": "Le immagini di questa pagina sono ricostruzioni fatte dai file di progetto per la produzione.",
     "fm.name": "Nome", "fm.email": "Email", "fm.country": "Paese", "fm.qty": "Quantità", "fm.intent": "Sono",
     "fm.i1": "pronto a comprare la prima serie", "fm.i2": "interessato, voglio i dettagli", "fm.i3": "uno che segue il progetto",
     "fm.idea": "Cosa dovrebbe diventare Drummatic?", "fm.idea.ph": "Una funzione, un firmware, un suono che ti manca",
-    "fm.submit": "Prepara la mia richiesta", "fm.copy": "Copia il messaggio", "fm.copyaddr": "Copia l'indirizzo",
+    "fm.submit": "Prepara la mia richiesta", "fm.copy": "Copia il messaggio", "fm.copyaddr": "Copia l'indirizzo", "fm.mail": "Invia con la tua email", "foot.contact": "Contatti",
     "faq.title": "Domande",
     "q1": "Serve un computer?", "a1": "No. Drummatic è uno strumento autonomo: la accendi, la suoni, colleghi cuffie o mixer alle uscite. Un computer o un telefono sulla stessa rete possono aprire una copia virtuale del pannello nel browser: comodo, ma non necessario.",
     "q2": "Può far girare altro oltre a LazerDrum?", "a2": "È l'idea su cui è costruita. Il pannello ha solo diciture neutre e i tasti hanno il nome sullo schermo, così un firmware diverso può farne uno strumento diverso. LazerDrum è il primo.",
@@ -943,8 +945,10 @@ footer .logo { color: var(--fg); }
     var out = document.getElementById("f-out"); out.hidden = false;
     var addr = document.getElementById("f-addr"), ca = document.getElementById("f-copyaddr");
     if (CONTACT) {
-      document.getElementById("f-out-text").textContent = lang === "it" ? "Il messaggio è pronto. Copialo e mandalo a questo indirizzo: ti rispondiamo con prezzo e data appena sono definitivi." : "Your request is ready. Copy it and send it to this address; we reply with the final price and date as soon as they are set.";
+      document.getElementById("f-out-text").textContent = lang === "it" ? "Il messaggio è pronto. Invialo con il pulsante (si apre la tua email con tutto già scritto) oppure copialo e mandalo a questo indirizzo: ti rispondiamo con prezzo e data appena sono definitivi." : "Your request is ready. Send it with the button (your email app opens with everything written in) or copy it to this address; we reply with the final price and date as soon as they are set.";
       addr.textContent = CONTACT; ca.hidden = false;
+      var ml = document.getElementById("f-mail");   // one tap: the visitor's own email app with the request written in
+      ml.href = "mailto:" + CONTACT + "?subject=" + encodeURIComponent(lines[0]) + "&body=" + encodeURIComponent(msg); ml.hidden = false;
     } else {
       document.getElementById("f-out-text").textContent = lang === "it" ? "Il messaggio è pronto. L'indirizzo per le prenotazioni viene pubblicato qui a breve: copia il messaggio e tienilo." : "Your request is ready. The reservation address will be published here shortly: copy the message and keep it.";
       addr.textContent = ""; ca.hidden = true;
