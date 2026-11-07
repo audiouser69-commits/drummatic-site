@@ -374,7 +374,7 @@ footer .logo { color: var(--fg); }
         <ul>
           <li data-i18n="f2.l1">MARKOV: variations learned from your own pattern</li>
           <li data-i18n="f2.l2">EVOLVE: the pattern drifts slowly, MANUAL brings it back</li>
-          <li data-i18n="f2.l3">28 break presets and 146 sound presets on the DATA encoder, the IDM ones first</li>
+          <li data-i18n="f2.l3">41 break presets and 194 sound presets on the DATA encoder, with 13 folders of IDM kits</li>
         </ul>
       </article>
       <article>
@@ -482,7 +482,7 @@ footer .logo { color: var(--fg); }
         <div class="pillar"><span class="k" data-i18n="p1.k">Updates</span><div><h3 data-i18n="p1.h">One file on a USB stick</h3><p data-i18n="p1.p">Copy the new firmware to a stick, plug it into USB HOST on the back, and the machine updates itself, including the controller that reads the keys. No computer, no opening the case.</p></div></div>
         <div class="pillar"><span class="k" data-i18n="p2.k">Panel</span><div><h3 data-i18n="p2.h">Neutral by design</h3><p data-i18n="p2.p">Only fixed legends are engraved: numbers, transport, FUNC, arrows, DATA, VOLUME. Every other key is named on the screen, so a new firmware can turn the same panel into a different instrument.</p></div></div>
         <div class="pillar"><span class="k" data-i18n="p3.k">Inside</span><div><h3 data-i18n="p3.h">Standard, serviceable parts</h3><p data-i18n="p3.p">Known, widely available parts with years of headroom, swappable keys, screws instead of glue.</p></div></div>
-        <div class="pillar"><span class="k" data-i18n="p4.k">You</span><div><h3 data-i18n="p4.h">Your ideas go on the list</h3><p data-i18n="p4.p">Tell us what Drummatic should become in the waitlist form. Requests from the first owners decide what comes after LazerDrum 2.2.</p></div></div>
+        <div class="pillar"><span class="k" data-i18n="p4.k">You</span><div><h3 data-i18n="p4.h">Your ideas go on the list</h3><p data-i18n="p4.p">Tell us what Drummatic should become in the waitlist form. Requests from the first owners decide what comes next.</p></div></div>
       </div>
       <div class="log">
         <h3 data-i18n="log.h">Firmware so far</h3>
@@ -493,9 +493,14 @@ footer .logo { color: var(--fg); }
           <li><span class="v">2.1</span><div data-i18n="log.4">16 patterns per project, pattern switching in time, song mode.</div></li>
           <li><span class="v">2.2</span><div data-i18n="log.6">IDM kits: 56 sounds in seven folders and 12 IDM break presets of 32 steps, first in their lists.</div></li>
           <li><span class="v">2.2.1</span><div data-i18n="log.7">An empty pattern starts as a copy of the one you come from; after STOP the song starts again from row 1.</div></li>
+          <li><span class="v">2.2.3</span><div data-i18n="log.8">183 parameters for your DAW's automation and LFOs, and a MIDI CC map for every port.</div></li>
+          <li><span class="v">2.3</span><div data-i18n="log.9">Claude can play it: a built-in MCP server lets Claude load kits, write patterns, mix and read the screen over your network.</div></li>
+          <li><span class="v">2.4</span><div data-i18n="log.10">Piano roll with note length: DATA picks the line, the TRIG keys write the notes. The whole interface in English.</div></li>
+          <li><span class="v">2.5</span><div data-i18n="log.11">Six new kits designed from the physics of each sound, from dub to bleep techno, each with its own break.</div></li>
+          <li><span class="v">2.6</span><div data-i18n="log.12">The 16 keys blink in time with the REPEAT stutter; the mixer shows each track's sound and real level.</div></li>
           <li class="next"><span class="v">next</span><div><span data-i18n="log.5">Being explored: step pages that follow the playhead, more engine families, new instruments for the same panel.</span></div></li>
         </ol>
-        <div class="log-foot" data-i18n="log.foot">Six releases in the first weeks of work on the prototype.</div>
+        <div class="log-foot" data-i18n="log.foot">Eleven releases in the first weeks of work on the prototype.</div>
       </div>
     </div>
   </div>
@@ -510,8 +515,8 @@ footer .logo { color: var(--fg); }
     </div>
     <div class="specs">
       <dl>
-        <dt data-i18n="sp.k1">Sound</dt><dd data-i18n="sp.v1">64 synthesis engines in 16 families, 8 tracks, per-step engine choice</dd>
-        <dt data-i18n="sp.k2">Sequencer</dt><dd data-i18n="sp.v2">8 tracks × 64 steps, per-step locks, 16 patterns per project, song of up to 99 rows</dd>
+        <dt data-i18n="sp.k1">Sound</dt><dd data-i18n="sp.v1">64 synthesis engines in 16 families, 8 tracks, per-step engine choice, 194 sound presets</dd>
+        <dt data-i18n="sp.k2">Sequencer</dt><dd data-i18n="sp.v2">8 tracks × 64 steps, per-step locks, piano roll with note length, 16 patterns per project, song of up to 99 rows</dd>
         <dt data-i18n="sp.k3">Effects</dt><dd data-i18n="sp.v3">TAPZ multi-tap echo, REPEAT stutter, COLOR saturation, mastering with loudness target</dd>
         <dt data-i18n="sp.k4">Memory</dt><dd data-i18n="sp.v4">16 project slots, automatic session save, USB backup</dd>
         <dt data-i18n="sp.k5">Screen</dt><dd data-i18n="sp.v5">5" touch display, 1280 × 720</dd>
@@ -520,6 +525,8 @@ footer .logo { color: var(--fg); }
       </dl>
       <dl>
         <dt>MIDI</dt><dd data-i18n="sp.v8">DIN in and out, USB MIDI, clock follow (start, stop, song position)</dd>
+        <dt data-i18n="sp.k15">Wireless</dt><dd data-i18n="sp.v15">Wi-Fi and Bluetooth 5.0 built in. Over Wi-Fi: the virtual panel in any browser on your network</dd>
+        <dt data-i18n="sp.k16">AI control</dt><dd data-i18n="sp.v16">Built-in MCP server: Claude can load kits, write patterns, mix and read the screen</dd>
         <dt data-i18n="sp.k9">Computer</dt><dd data-i18n="sp.v9">Quad-core computer with active cooling</dd>
         <dt data-i18n="sp.k10">Power</dt><dd data-i18n="sp.v10">USB-C, 27 W supply included, side power button</dd>
         <dt data-i18n="sp.k11">Case</dt><dd data-i18n="sp.v11">Milled and bent aluminium, black anodized and powder-coated</dd>
@@ -632,7 +639,7 @@ footer .logo { color: var(--fg); }
     "fw.eyebrow": "Firmware di partenza · LazerDrum 2.2", "fw.title": "Una macchina per breakbeat con un sintetizzatore dietro ogni tasto",
     "f1.h": "64 motori, 16 famiglie", "f1.p": "Ogni traccia suona uno dei 64 suoni sintetizzati, e ogni singolo passo può chiamarne un altro. Dodici controlli per motore: pitch, attack, decay, tone, noise, FM, rapporto FM, indice FM, risonanza, drive, crush e una coda con nove modi risonanti.",
     "f2.h": "Un generatore di break che conosce i generi", "f2.p": "Otto stili, dalla jungle Amen al drill'n'bass, con chop, ghost, roll, fill, hat e zap come controlli dal vivo. MATRIX costruisce un mondo intero con un tasto: stile, tempo, break, kit e tutti i 64 motori.",
-    "f2.l1": "MARKOV: variazioni imparate dal tuo pattern", "f2.l2": "EVOLVE: il pattern cambia piano piano, MANUAL lo riporta com'era", "f2.l3": "28 preset di break e 146 preset di suono sull'encoder DATA, quelli IDM per primi",
+    "f2.l1": "MARKOV: variazioni imparate dal tuo pattern", "f2.l2": "EVOLVE: il pattern cambia piano piano, MANUAL lo riporta com'era", "f2.l3": "41 preset di break e 194 preset di suono sull'encoder DATA, con 13 cartelle di kit IDM",
     "f3.h": "8 tracce × 64 passi, lock su ogni passo", "f3.p": "Tieni premuto uno dei sedici tasti e gli encoder scrivono solo in quel passo: velocity, probabilità, retrig, nudge, pitch, motore, un lancio nell'eco, un repeat e un lock su ognuno dei dodici controlli del suono.",
     "f3.l1": "Registrazione dal vivo dagli otto tasti traccia", "f3.l2": "Copia e incolla di pagine, tracce e pattern", "f3.l3": "24 livelli di UNDO e REDO",
     "f4.h": "16 pattern e una song, cambiati a tempo", "f4.p": "Ogni progetto contiene 16 pattern che condividono lo stesso kit. Scegli il prossimo mentre suona quello attuale: aspetta lampeggiando e parte alla fine del pattern. Concatenali in una song fino a 99 righe con le ripetizioni, che ricomincia o si ferma alla fine.",
@@ -658,22 +665,22 @@ footer .logo { color: var(--fg); }
     "p1.k": "Aggiornamenti", "p1.h": "Un file su una chiavetta USB", "p1.p": "Copia il nuovo firmware su una chiavetta, infilala in USB HOST sul retro e la macchina si aggiorna da sola, compreso il controller che legge i tasti. Niente computer, niente contenitore da aprire.",
     "p2.k": "Pannello", "p2.h": "Neutro per scelta", "p2.p": "Sono incise solo le diciture fisse: numeri, trasporto, FUNC, frecce, DATA, VOLUME. Tutti gli altri tasti hanno il nome sullo schermo, così un nuovo firmware può trasformare lo stesso pannello in uno strumento diverso.",
     "p3.k": "Dentro", "p3.h": "Parti standard e riparabili", "p3.p": "Componenti noti e facili da trovare, con anni di margine, tasti sostituibili, viti al posto della colla.",
-    "p4.k": "Tu", "p4.h": "Le tue idee entrano in lista", "p4.p": "Scrivi nel modulo della lista d'attesa cosa dovrebbe diventare Drummatic. Le richieste dei primi possessori decidono cosa viene dopo LazerDrum 2.2.",
+    "p4.k": "Tu", "p4.h": "Le tue idee entrano in lista", "p4.p": "Scrivi nel modulo della lista d'attesa cosa dovrebbe diventare Drummatic. Le richieste dei primi possessori decidono cosa viene dopo.",
     "log.h": "Il firmware finora", "log.1": "LazerDrum su Drummatic: tutto il motore del plugin per MPC, il pannello, UNDO, la mappa FUNC, il pannello virtuale.",
     "log.2": "Uscita audio diretta, latenza più bassa.", "log.3": "Caratteri più grandi per lo schermo da 5 pollici, misura del carico audio e dei buchi.",
     "log.4": "16 pattern per progetto, cambio pattern a tempo, modalità song.", "log.6": "Kit IDM: 56 suoni in sette cartelle e 12 preset di break IDM da 32 passi, primi nei loro elenchi.", "log.5": "Allo studio: pagine di passi che seguono il sequencer, nuove famiglie di motori, nuovi strumenti per lo stesso pannello.",
-    "log.7": "Un pattern vuoto parte come copia di quello da cui vieni; dopo lo STOP la song riparte dalla riga 1.",
-    "log.foot": "Sei versioni nelle prime settimane di lavoro sul prototipo.",
+    "log.7": "Un pattern vuoto parte come copia di quello da cui vieni; dopo lo STOP la song riparte dalla riga 1.", "log.8": "183 parametri per l'automazione e gli LFO della tua DAW, e una mappa di CC MIDI su ogni versione.", "log.9": "Claude la può suonare: un server MCP interno permette a Claude di caricare kit, scrivere pattern, mixare e guardare lo schermo dalla tua rete.", "log.10": "Piano roll con la durata delle note: DATA sceglie la riga, i tasti TRIG scrivono le note. Tutta l'interfaccia in inglese.", "log.11": "Sei kit nuovi progettati dalla fisica di ogni suono, dal dub alla bleep techno, ognuno con il suo break.", "log.12": "I 16 tasti lampeggiano a tempo con lo stutter di REPEAT; il mixer mostra il suono e il livello vero di ogni traccia.",
+    "log.foot": "Undici versioni nelle prime settimane di lavoro sul prototipo.",
     "sp.eyebrow": "Dati tecnici", "sp.title": "Caratteristiche",
-    "sp.k1": "Suono", "sp.v1": "64 motori di sintesi in 16 famiglie, 8 tracce, motore scelto anche passo per passo",
-    "sp.k2": "Sequencer", "sp.v2": "8 tracce × 64 passi, lock per passo, 16 pattern per progetto, song fino a 99 righe",
+    "sp.k1": "Suono", "sp.v1": "64 motori di sintesi in 16 famiglie, 8 tracce, motore scelto anche passo per passo, 194 preset di suono",
+    "sp.k2": "Sequencer", "sp.v2": "8 tracce × 64 passi, lock per passo, piano roll con durata delle note, 16 pattern per progetto, song fino a 99 righe",
     "sp.k3": "Effetti", "sp.v3": "Eco a prese multiple TAPZ, stutter REPEAT, saturazione COLOR, mastering con volume percepito di riferimento",
     "sp.k4": "Memoria", "sp.v4": "16 posti per i progetti, salvataggio automatico della sessione, backup su USB",
     "sp.k5": "Schermo", "sp.v5": "Display touch da 5\", 1280 × 720",
     "sp.k6": "Controlli", "sp.v6": "46 tasti meccanici con LED RGB, 9 encoder con pulsante, potenziometro del volume",
     "sp.k7": "Audio", "sp.v7": "Convertitori a 24 bit, uscita e ingresso stereo su jack da 6,35 mm, motore a 48 kHz",
     "sp.v8": "DIN in e out, MIDI via USB, clock esterno (start, stop, posizione nel brano)",
-    "sp.k9": "Computer", "sp.v9": "Computer quad-core con raffreddamento attivo",
+    "sp.k15": "Wireless", "sp.v15": "Wi-Fi e Bluetooth 5.0 integrati. In Wi-Fi: il pannello virtuale in qualsiasi browser della tua rete", "sp.k16": "Controllo con AI", "sp.v16": "Server MCP integrato: Claude può caricare kit, scrivere pattern, mixare e guardare lo schermo", "sp.k9": "Computer", "sp.v9": "Computer quad-core con raffreddamento attivo",
     "sp.k10": "Alimentazione", "sp.v10": "USB-C, alimentatore da 27 W incluso, pulsante di accensione sul fianco",
     "sp.k11": "Contenitore", "sp.v11": "Alluminio fresato e piegato, anodizzato nero e verniciato a polvere",
     "sp.k12": "Dimensioni", "sp.v12": "356 × 230 mm, alta 45 mm davanti e 75 mm dietro, più i piedini",
